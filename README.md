@@ -1,1 +1,1 @@
-# Plata
+# Plataforma Streaming
