@@ -1,6 +1,8 @@
 package Contenido;
 
-public  class  AudioVisual {
+import Excepciones.InvalidRatingException;
+
+public  abstract class  AudioVisual {
 
     protected String titulo;
 
@@ -13,6 +15,7 @@ public  class  AudioVisual {
     protected boolean estado;
 
 
+
     public AudioVisual(String titulo, String genero, int año, int calificacion, boolean estado) {
         this.titulo = titulo;
         this.genero = genero;
@@ -20,6 +23,11 @@ public  class  AudioVisual {
         this.calificacion = calificacion;
         this.estado = estado;
     }
+
+ public  abstract void reproducir();
+
+ public  abstract void calificacion(int calificacion) throws InvalidRatingException;
+
 
 
 

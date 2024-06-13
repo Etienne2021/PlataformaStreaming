@@ -1,12 +1,10 @@
 package Interfaces;
 
-public interface ABM {
+public interface ABM<T> {
 
-    /*
-    public void Alta();
-    public  void Baja();
-    public void Modificar();
 
-    */
+      void alta(T t);
+      void baja(T t);
+      void modificar(T t);
 
 }
