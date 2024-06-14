@@ -1,6 +1,8 @@
 package Usuario;
 
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class Usuarios {
 
@@ -13,6 +15,7 @@ public class Usuarios {
     private ArrayList<Perfil>perfiles;
 
 
+
     public Usuarios(String nombre, String contraeña) {
         this.Nombre=nombre;
         this.contraeña = contraeña;
@@ -22,24 +25,11 @@ public class Usuarios {
 
 
 
-    public void iniciarSesion() {
 
-    }
 
-    public void cerrarSesion() {
-
-    }
-
-    public void registrarse() {
-
-    }
-
-    public void seleccionarPerfil() {
-
-    }
-
-    public void agregarPerfil(Perfil perfil) {
+    public ArrayList<Perfil> agregarPerfil(Perfil perfil) {
         perfiles.add(perfil);
+        return perfiles;
     }
 
     public void eliminarPerfil(Perfil perfil) {
@@ -77,5 +67,19 @@ public class Usuarios {
     public void setPerfiles(ArrayList<Perfil> perfiles) {
         this.perfiles = perfiles;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Usuarios usuarios)) return false;
+        return Objects.equals(getNombre(), usuarios.getNombre()) && Objects.equals(getContraeña(), usuarios.getContraeña()) && Objects.equals(getEstado(), usuarios.getEstado()) && Objects.equals(getPerfiles(), usuarios.getPerfiles());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNombre(), getContraeña(), getEstado(), getPerfiles());
+    }
 }
+
+
 
