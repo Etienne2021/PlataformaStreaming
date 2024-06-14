@@ -10,7 +10,8 @@ public class Usuarios {
 
     private String contraeña;
 
-    private Boolean Estado;
+    private boolean Estado;
+
 
     private ArrayList<Perfil>perfiles;
 

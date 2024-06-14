@@ -1,10 +1,10 @@
 package IU;
 
 import Contenedoras.ServicioStreaming;
-import Excepciones.ContraseñaNoCoincidenException;
-import Excepciones.UsuarioNoEncontradoException;
+import Excepciones.*;
 import Usuario.Perfil;
 import Usuario.Usuarios;
+
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -15,18 +15,16 @@ public class Menu {
     ServicioStreaming servicioStreaming=new ServicioStreaming();
 
 
+
     public void menu() {
         // Implementar lógica del menú principal
         // Este método puede mostrar opciones al usuario y llamar a otros métodos como menuSeries o menuPeliculas
     }
 
-
     public void menuSeries() {
         // Implementar lógica del menú de series
         // Este método puede mostrar una lista de series y permitir al usuario reproducir o calificar una serie
     }
-
-
 
     public void menuPeliculas() {
         // Implementar lógica del menú de películas
@@ -45,7 +43,6 @@ public class Menu {
             System.out.println("Error al iniciar sesión: " + e.getMessage());
         }
 
-
     }
 
     public void cerrarSesion() {
@@ -58,8 +55,10 @@ public class Menu {
 
         System.out.println("Ingrese su Nombre");
         String nombre= scanner.nextLine();
-        System.out.println("Ingrese su nueva contraseña");
+
+        System.out.println("Ingrese su nueva contraseña.(-Al menos  8 caracteres)");
         String contraseña=scanner.nextLine();
+
         System.out.println("Ingrese devuelta su nueva contraseña");
         String contraseñaconfirmar=scanner.nextLine();
 
@@ -70,7 +69,17 @@ public class Menu {
             System.out.println("No se puede registrar"+e.getMessage());
         }
 
+        try {
+            servicioStreaming.verificarsiexisteusuario(nombre);
+        }
+        catch (UsuarioYaexisteException e)
+        {
+            System.out.println("Nombre ya existe");
+        }
+
+
         Usuarios usuario1=new Usuarios(nombre,contraseña);
+
 
         System.out.println("Creando perfil");
         System.out.println("Ingrese el nombre del nuevo perfil");
@@ -78,11 +87,7 @@ public class Menu {
         Perfil perfil1=new Perfil(nombreperfil);
         usuario1.agregarPerfil(perfil1);
         servicioStreaming.AgregarUsuario(usuario1);
-
+        servicioStreaming.guardarenarchivo();
     }
-
-
-
-
 
 }

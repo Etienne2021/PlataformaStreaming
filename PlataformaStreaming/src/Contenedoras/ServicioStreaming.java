@@ -3,9 +3,18 @@ import Contenido.Pelicula;
 import Contenido.Serie;
 import Usuario.Perfil;
 import Usuario.Usuarios;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import Excepciones.*;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import javax.swing.*;
 
@@ -19,11 +28,13 @@ public class ServicioStreaming {
 
 
 
+
     public ServicioStreaming() {
         this.usuariosHashmap = new HashMap<>();
         this.peliculas = new ArrayList<>();
         this.series = new HashMap<>();
     }
+
 
 
    public void validarcontraseña(String contraseña,String confirmacontraseña) throws ContraseñaNoCoincidenException
@@ -68,6 +79,53 @@ public void verificarsiexiste(String nombre,String Contraseña)throws UsuarioNoE
 }
 
 
+
+public void verificarsiexisteusuario(String nombre) throws UsuarioYaexisteException
+{
+    if(!usuariosHashmap.containsKey(nombre))
+    {
+        System.out.println("Registro exitoso");
+    }
+    else
+    {
+        throw  new UsuarioYaexisteException("Nombre ya esta en uso");
+    }
+}
+
+
+ public void guardarenarchivo()
+ {
+
+     File file=new File("Usuarios.json");
+     ObjectMapper objectMapper=new ObjectMapper();
+     try
+     {
+         objectMapper.writeValue(file,usuariosHashmap);
+         System.out.println("Archivo guardado correctamente.");
+
+     }catch (IOException e){
+         System.out.println("No se pudo guardar el archivo"+e.getMessage());
+     }
+
+ }
+
+
+
+    public void leerenarchivo()
+    {
+
+        File file=new File("Usuarios.json");
+        ObjectMapper objectMapper=new ObjectMapper();
+        try
+        {
+            usuariosHashmap=objectMapper.readValue(file, new TypeReference<HashMap<String, Usuarios>>() {});
+            System.out.println("Archivo leído correctamente.");
+
+        }catch (IOException e){
+            System.out.println("No se pudo leer el archivo"+e.getMessage());
+        }
+
+    }
 
 
 
