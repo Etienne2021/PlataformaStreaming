@@ -84,6 +84,9 @@ public class Menu {
 
         servicioStreaming.AgregarUsuario(usuario1);
 
+        servicioStreaming.leerenarchivo();
+        servicioStreaming.mostrarUsuarios();
+
     }
 
 

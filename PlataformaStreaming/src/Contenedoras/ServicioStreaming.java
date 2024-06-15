@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+
+import Usuario.*;
 
 import Excepciones.*;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -23,6 +26,7 @@ public class ServicioStreaming {
 
     public ServicioStreaming() {
         this.usuariosHashSet = new HashSet<>();
+        leerenarchivo();
        // this.peliculas = new ArrayList<>();
        // this.series = new HashMap<>();
     }
@@ -59,7 +63,7 @@ public String  AgregarUsuario(Usuarios usuario)
                 break;
             }
         }
-        guardarenarchivo();
+       guardarenarchivo();
         return "Perfiles agregados al usuario existente";
     }
 }
@@ -120,6 +124,24 @@ public void verificarsiexiste(String nombre,String Contraseña)throws UsuarioNoE
             System.out.println("No se pudo leer el archivo"+e.getMessage());
         }
 
+    }
+
+    public void mostrarUsuarios() {
+        if (usuariosHashSet.isEmpty()) {
+            System.out.println("No hay usuarios para mostrar.");
+        } else {
+            for (Usuarios usuario : usuariosHashSet) {
+                System.out.println("Usuario: " + usuario.getNombre() + ", Contraseña: " + usuario.getContraseña() + ", Estado: " + usuario.getEstado());
+                List<Perfil> perfiles = usuario.getPerfiles();
+                if (perfiles.isEmpty()) {
+                    System.out.println("    No hay perfiles asociados a este usuario.");
+                } else {
+                    for (Perfil perfil : perfiles) {
+                        System.out.println("    Perfil: " + perfil.getNombre());
+                    }
+                }
+            }
+        }
     }
 
 
