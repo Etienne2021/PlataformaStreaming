@@ -15,22 +15,6 @@ public class Menu {
     ServicioStreaming servicioStreaming=new ServicioStreaming();
 
 
-
-    public void menu() {
-        // Implementar lógica del menú principal
-        // Este método puede mostrar opciones al usuario y llamar a otros métodos como menuSeries o menuPeliculas
-    }
-
-    public void menuSeries() {
-        // Implementar lógica del menú de series
-        // Este método puede mostrar una lista de series y permitir al usuario reproducir o calificar una serie
-    }
-
-    public void menuPeliculas() {
-        // Implementar lógica del menú de películas
-        // Este método puede mostrar una lista de películas y permitir al usuario reproducir o calificar una película
-    }
-
     public void iniciarSesion() {
 
         System.out.println("Ingrese su Nombre");
@@ -51,43 +35,56 @@ public class Menu {
 
     }
 
+
     public void registrarse() {
+        String nombre;
+        String contraseña;
+        String contraseñaConfirmar;
+        servicioStreaming.leerenarchivo();
 
-        System.out.println("Ingrese su Nombre");
-        String nombre= scanner.nextLine();
+        do {
+            System.out.println("Ingrese su Nombre:");
+            nombre = scanner.nextLine();
 
-        System.out.println("Ingrese su nueva contraseña.(-Al menos  8 caracteres)");
-        String contraseña=scanner.nextLine();
+            System.out.println("Ingrese su nueva contraseña (al menos 8 caracteres):");
+            contraseña = scanner.nextLine();
 
-        System.out.println("Ingrese devuelta su nueva contraseña");
-        String contraseñaconfirmar=scanner.nextLine();
+            System.out.println("Ingrese de nuevo su nueva contraseña:");
+            contraseñaConfirmar = scanner.nextLine();
 
-        try {
-           servicioStreaming.validarcontraseña(contraseña,contraseñaconfirmar);
-        } catch (ContraseñaNoCoincidenException e)
-        {
-            System.out.println("No se puede registrar"+e.getMessage());
-        }
+            try {
+                servicioStreaming.validarcontraseña(contraseña, contraseñaConfirmar);
+            } catch (ContraseñaNoCoincidenException e) {
+                System.out.println("Error: " + e.getMessage());
+                continue; // Continuar al siguiente ciclo del bucle
+            }
 
-        try {
-            servicioStreaming.verificarsiexisteusuario(nombre);
-        }
-        catch (UsuarioYaexisteException e)
-        {
-            System.out.println("Nombre ya existe");
-        }
+            try {
+                servicioStreaming.verificarsiexisteusuario(nombre);
+            } catch (UsuarioYaexisteException e) {
+                System.out.println("Error: " + e.getMessage());
+                continue; // Continuar al siguiente ciclo del bucle
+            }
 
+            // Salir del bucle si las validaciones fueron exitosas
+            break;
 
-        Usuarios usuario1=new Usuarios(nombre,contraseña);
+        } while (true);
 
+        // Si se llega aquí, se han cumplido todas las validaciones
+        Usuarios usuario1 = new Usuarios(nombre, contraseña);
 
-        System.out.println("Creando perfil");
-        System.out.println("Ingrese el nombre del nuevo perfil");
-        String nombreperfil=scanner.nextLine();
-        Perfil perfil1=new Perfil(nombreperfil);
+        System.out.println("Creando perfil...");
+        System.out.println("Ingrese el nombre del nuevo perfil:");
+        String nombrePerfil = scanner.nextLine();
+
+        Perfil perfil1 = new Perfil(nombrePerfil);
         usuario1.agregarPerfil(perfil1);
+
         servicioStreaming.AgregarUsuario(usuario1);
-        servicioStreaming.guardarenarchivo();
+
     }
+
+
 
 }

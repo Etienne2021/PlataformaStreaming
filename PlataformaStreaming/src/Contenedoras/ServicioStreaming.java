@@ -4,35 +4,30 @@ import Contenido.Serie;
 import Usuario.Perfil;
 import Usuario.Usuarios;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import Excepciones.*;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-
-import javax.swing.*;
 
 public class ServicioStreaming {
 
     private HashMap<String, Usuarios> usuariosHashmap;
+    /*
     private Usuarios usuarioLogeado;
     private Perfil perfilSeleccionado;
     private ArrayList<Pelicula> peliculas;
     private HashMap<String, Serie> series;
 
-
+*/
 
 
     public ServicioStreaming() {
+        leerenarchivo();
         this.usuariosHashmap = new HashMap<>();
-        this.peliculas = new ArrayList<>();
-        this.series = new HashMap<>();
+       // this.peliculas = new ArrayList<>();
+       // this.series = new HashMap<>();
     }
 
 
@@ -58,10 +53,12 @@ public String  AgregarUsuario(Usuarios usuario)
     }
     if (!usuariosHashmap.containsKey(usuario.getNombre())) {
         usuariosHashmap.put(usuario.getNombre(), usuario);
+        guardarenarchivo();
         return "Nuevo usuario agregado";
     } else {
         Usuarios usuarioExistente = usuariosHashmap.get(usuario.getNombre());
         usuarioExistente.getPerfiles().addAll(usuario.getPerfiles());
+        guardarenarchivo();
         return "Perfiles agregados al usuario existente";
     }
 }
@@ -70,7 +67,7 @@ public void verificarsiexiste(String nombre,String Contraseña)throws UsuarioNoE
 {
 
     Usuarios usuario = usuariosHashmap.get(nombre);
-    if (usuario != null && usuario.getContraeña().equals(Contraseña)) {
+    if (usuario != null && usuario.getContraseña().equals(Contraseña)) {
         System.out.println("Inicio de sesión exitoso");
     } else {
         throw new UsuarioNoEncontradoException("Nombre de usuario o contraseña incorrecta");
@@ -82,13 +79,8 @@ public void verificarsiexiste(String nombre,String Contraseña)throws UsuarioNoE
 
 public void verificarsiexisteusuario(String nombre) throws UsuarioYaexisteException
 {
-    if(!usuariosHashmap.containsKey(nombre))
-    {
-        System.out.println("Registro exitoso");
-    }
-    else
-    {
-        throw  new UsuarioYaexisteException("Nombre ya esta en uso");
+    if (usuariosHashmap.containsKey(nombre)) {
+        throw new UsuarioYaexisteException("Nombre de usuario ya está en uso.");
     }
 }
 

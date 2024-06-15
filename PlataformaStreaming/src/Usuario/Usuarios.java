@@ -1,14 +1,16 @@
 package Usuario;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Scanner;
 
 public class Usuarios {
 
     private  String Nombre;
 
-    private String contraeña;
+    private String contraseña;
 
     private boolean Estado;
 
@@ -16,21 +18,33 @@ public class Usuarios {
     private ArrayList<Perfil>perfiles;
 
 
+    // Constructor básico para inicializar perfiles vacíos
+    public Usuarios(String nombre, String contraseña) {
+        this.Nombre = nombre;
+        this.contraseña = contraseña;
+        this.Estado = false; // Inicializado en falso por defecto
+        this.perfiles = new ArrayList<>();
+    }
 
-    public Usuarios(String nombre, String contraeña) {
-        this.Nombre=nombre;
-        this.contraeña = contraeña;
-        this.Estado=false;
-        this.perfiles=new ArrayList<>();
+
+    // Constructor con anotaciones Jackson para el mapeo desde JSON
+    @JsonCreator
+    public Usuarios(
+            @JsonProperty("nombre") String nombre,
+            @JsonProperty("contraseña") String contraseña,
+            @JsonProperty("perfiles") ArrayList<Perfil> perfiles,
+            @JsonProperty("estado") boolean estado) {
+        this.Nombre = nombre;
+        this.contraseña = contraseña;
+        this.perfiles = perfiles != null ? perfiles : new ArrayList<>();
+        this.Estado = estado;
     }
 
 
 
 
-
-    public ArrayList<Perfil> agregarPerfil(Perfil perfil) {
+    public void agregarPerfil(Perfil perfil) {
         perfiles.add(perfil);
-        return perfiles;
     }
 
     public void eliminarPerfil(Perfil perfil) {
@@ -45,12 +59,12 @@ public class Usuarios {
         Nombre = nombre;
     }
 
-    public String getContraeña() {
-        return contraeña;
+    public String getContraseña() {
+        return contraseña;
     }
 
-    public void setContraeña(String contraeña) {
-        this.contraeña = contraeña;
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña;
     }
 
     public Boolean getEstado() {
@@ -73,12 +87,12 @@ public class Usuarios {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Usuarios usuarios)) return false;
-        return Objects.equals(getNombre(), usuarios.getNombre()) && Objects.equals(getContraeña(), usuarios.getContraeña()) && Objects.equals(getEstado(), usuarios.getEstado()) && Objects.equals(getPerfiles(), usuarios.getPerfiles());
+        return Objects.equals(getNombre(), usuarios.getNombre()) && Objects.equals(getContraseña(), usuarios.getContraseña()) && Objects.equals(getEstado(), usuarios.getEstado()) && Objects.equals(getPerfiles(), usuarios.getPerfiles());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNombre(), getContraeña(), getEstado(), getPerfiles());
+        return Objects.hash(getNombre(), getContraseña(), getEstado(), getPerfiles());
     }
 }
 
