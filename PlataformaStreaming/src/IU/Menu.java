@@ -26,8 +26,9 @@ public class Menu {
         } catch (UsuarioNoEncontradoException e) {
             System.out.println("Error al iniciar sesión: " + e.getMessage());
         }
-
     }
+
+
 
     public void cerrarSesion() {
 
@@ -36,11 +37,11 @@ public class Menu {
     }
 
 
+
     public void registrarse() {
         String nombre;
         String contraseña;
         String contraseñaConfirmar;
-        servicioStreaming.leerenarchivo();
 
         do {
             System.out.println("Ingrese su Nombre:");

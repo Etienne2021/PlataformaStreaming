@@ -3,20 +3,21 @@ package Usuario;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class Perfil {
 
     private String nombre;
 
 
 
-    public Perfil() {
-    }
 
-    // Constructor con anotaciones Jackson para el mapeo desde JSON
-    @JsonCreator
     public Perfil(String nombre) {
         this.nombre = nombre;
     }
+
+
 
 
 
@@ -29,4 +30,15 @@ public class Perfil {
         this.nombre = nombre;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Perfil perfil)) return false;
+        return Objects.equals(nombre, perfil.nombre);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(nombre);
+    }
 }

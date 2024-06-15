@@ -36,7 +36,7 @@ public class Usuarios {
             @JsonProperty("estado") boolean estado) {
         this.Nombre = nombre;
         this.contraseña = contraseña;
-        this.perfiles = perfiles != null ? perfiles : new ArrayList<>();
+        this.perfiles = new ArrayList<>();
         this.Estado = estado;
     }
 

@@ -1,19 +1,17 @@
 package Contenedoras;
-import Contenido.Pelicula;
-import Contenido.Serie;
-import Usuario.Perfil;
 import Usuario.Usuarios;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+
 import Excepciones.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ServicioStreaming {
 
-    private HashMap<String, Usuarios> usuariosHashmap;
+    private HashSet<Usuarios> usuariosHashSet;
     /*
     private Usuarios usuarioLogeado;
     private Perfil perfilSeleccionado;
@@ -24,8 +22,7 @@ public class ServicioStreaming {
 
 
     public ServicioStreaming() {
-        leerenarchivo();
-        this.usuariosHashmap = new HashMap<>();
+        this.usuariosHashSet = new HashSet<>();
        // this.peliculas = new ArrayList<>();
        // this.series = new HashMap<>();
     }
@@ -51,13 +48,17 @@ public String  AgregarUsuario(Usuarios usuario)
     if (usuario.getPerfiles().isEmpty()) {
         return "No hay perfiles creados";
     }
-    if (!usuariosHashmap.containsKey(usuario.getNombre())) {
-        usuariosHashmap.put(usuario.getNombre(), usuario);
+    if (!usuariosHashSet.contains(usuario)) {
+        usuariosHashSet.add(usuario);
         guardarenarchivo();
         return "Nuevo usuario agregado";
     } else {
-        Usuarios usuarioExistente = usuariosHashmap.get(usuario.getNombre());
-        usuarioExistente.getPerfiles().addAll(usuario.getPerfiles());
+        for (Usuarios u : usuariosHashSet) {
+            if (u.equals(usuario)) {
+                u.getPerfiles().addAll(usuario.getPerfiles());
+                break;
+            }
+        }
         guardarenarchivo();
         return "Perfiles agregados al usuario existente";
     }
@@ -66,23 +67,25 @@ public String  AgregarUsuario(Usuarios usuario)
 public void verificarsiexiste(String nombre,String Contraseña)throws UsuarioNoEncontradoException
 {
 
-    Usuarios usuario = usuariosHashmap.get(nombre);
-    if (usuario != null && usuario.getContraseña().equals(Contraseña)) {
-        System.out.println("Inicio de sesión exitoso");
-    } else {
-        throw new UsuarioNoEncontradoException("Nombre de usuario o contraseña incorrecta");
+    for (Usuarios u : usuariosHashSet) {
+        if (u.getNombre().equals(nombre) && u.getContraseña().equals(Contraseña)) {
+            System.out.println("Inicio de sesión exitoso");
+            return;
+        }
     }
+    throw new UsuarioNoEncontradoException("Nombre de usuario o contraseña incorrecta");
 
 }
 
 
 
-public void verificarsiexisteusuario(String nombre) throws UsuarioYaexisteException
-{
-    if (usuariosHashmap.containsKey(nombre)) {
-        throw new UsuarioYaexisteException("Nombre de usuario ya está en uso.");
+    public void verificarsiexisteusuario(String nombre) throws UsuarioYaexisteException {
+        for (Usuarios u : usuariosHashSet) {
+            if (u.getNombre().equals(nombre)) {
+                throw new UsuarioYaexisteException("Nombre de usuario ya está en uso.");
+            }
+        }
     }
-}
 
 
  public void guardarenarchivo()
@@ -92,7 +95,7 @@ public void verificarsiexisteusuario(String nombre) throws UsuarioYaexisteExcept
      ObjectMapper objectMapper=new ObjectMapper();
      try
      {
-         objectMapper.writeValue(file,usuariosHashmap);
+         objectMapper.writeValue(file,usuariosHashSet);
          System.out.println("Archivo guardado correctamente.");
 
      }catch (IOException e){
@@ -110,7 +113,7 @@ public void verificarsiexisteusuario(String nombre) throws UsuarioYaexisteExcept
         ObjectMapper objectMapper=new ObjectMapper();
         try
         {
-            usuariosHashmap=objectMapper.readValue(file, new TypeReference<HashMap<String, Usuarios>>() {});
+            usuariosHashSet=objectMapper.readValue(file, new TypeReference<HashSet<Usuarios>>() {});
             System.out.println("Archivo leído correctamente.");
 
         }catch (IOException e){
