@@ -11,7 +11,7 @@ import Excepciones.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class ServicioStreaming {
+public class ServicioStreaming holaa{
 
     private HashMap<String, Usuarios> usuariosHashmap;
     /*
