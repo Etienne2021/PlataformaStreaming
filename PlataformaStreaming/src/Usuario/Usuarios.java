@@ -32,7 +32,6 @@ public class Usuarios {
     public Usuarios(
             @JsonProperty("nombre") String nombre,
             @JsonProperty("contraseña") String contraseña,
-            @JsonProperty("perfiles") ArrayList<Perfil> perfiles,
             @JsonProperty("estado") boolean estado) {
         this.Nombre = nombre;
         this.contraseña = contraseña;
@@ -41,11 +40,10 @@ public class Usuarios {
     }
 
 
-
-
     public void agregarPerfil(Perfil perfil) {
         perfiles.add(perfil);
     }
+
 
     public void eliminarPerfil(Perfil perfil) {
         perfiles.remove(perfil);
@@ -67,11 +65,11 @@ public class Usuarios {
         this.contraseña = contraseña;
     }
 
-    public Boolean getEstado() {
+    public boolean isEstado() {
         return Estado;
     }
 
-    public void setEstado(Boolean estado) {
+    public void setEstado(boolean estado) {
         Estado = estado;
     }
 
@@ -87,14 +85,24 @@ public class Usuarios {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Usuarios usuarios)) return false;
-        return Objects.equals(getNombre(), usuarios.getNombre()) && Objects.equals(getContraseña(), usuarios.getContraseña()) && Objects.equals(getEstado(), usuarios.getEstado()) && Objects.equals(getPerfiles(), usuarios.getPerfiles());
+        return isEstado() == usuarios.isEstado() && Objects.equals(getNombre(), usuarios.getNombre()) && Objects.equals(getContraseña(), usuarios.getContraseña()) && Objects.equals(getPerfiles(), usuarios.getPerfiles());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNombre(), getContraseña(), getEstado(), getPerfiles());
+        return Objects.hash(getNombre(), getContraseña(), isEstado(), getPerfiles());
+    }
+
+
+    @Override
+    public String toString() {
+        return "Usuarios{" +
+                "Nombre='" + Nombre + '\'' +
+                ", contraseña='" + contraseña + '\'' +
+                ", Estado=" + Estado +
+                ", perfiles=" + perfiles +
+                '}';
     }
 }
-
 
 

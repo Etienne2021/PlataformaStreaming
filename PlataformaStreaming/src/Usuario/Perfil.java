@@ -12,7 +12,7 @@ public class Perfil {
 
 
 
-    public Perfil( String nombre) {
+    public Perfil(@JsonProperty("nombre") String nombre) {
         this.nombre = nombre;
     }
 
@@ -36,5 +36,12 @@ public class Perfil {
     @Override
     public int hashCode() {
         return Objects.hashCode(nombre);
+    }
+
+    @Override
+    public String toString() {
+        return "Perfil{" +
+                "nombre='" + nombre + '\'' +
+                '}';
     }
 }

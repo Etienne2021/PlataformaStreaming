@@ -15,17 +15,29 @@ public class Menu {
     ServicioStreaming servicioStreaming=new ServicioStreaming();
 
 
+
     public void iniciarSesion() {
 
-        System.out.println("Ingrese su Nombre");
-        String nombre= scanner.nextLine();
-        System.out.println("Ingrese su  contraseña");
-        String contraseña=scanner.nextLine();
-        try {
-            servicioStreaming.verificarsiexiste(nombre,contraseña);
-        } catch (UsuarioNoEncontradoException e) {
-            System.out.println("Error al iniciar sesión: " + e.getMessage());
-        }
+        String nombre;
+
+        do {
+            System.out.println("Ingrese su Nombre");
+             nombre= scanner.nextLine();
+            System.out.println("Ingrese su  contraseña");
+            String contraseña=scanner.nextLine();
+            try {
+                servicioStreaming.verificarsiexiste(nombre,contraseña);
+            } catch (UsuarioNoEncontradoException e) {
+                System.out.println("Error al iniciar sesión: " + e.getMessage());
+            }
+            break;
+        }while (true);
+
+        System.out.println("Inicio de sesion exitoso");
+        servicioStreaming.agregarHistorialInicioSesion(nombre);
+        servicioStreaming.mostrarHistorialInicioSesion(nombre);
+
+
     }
 
 
@@ -39,11 +51,15 @@ public class Menu {
 
 
     public void registrarse() {
+
+
         String nombre;
         String contraseña;
         String contraseñaConfirmar;
 
+
         do {
+
             System.out.println("Ingrese su Nombre:");
             nombre = scanner.nextLine();
 
@@ -52,6 +68,8 @@ public class Menu {
 
             System.out.println("Ingrese de nuevo su nueva contraseña:");
             contraseñaConfirmar = scanner.nextLine();
+
+
 
             try {
                 servicioStreaming.validarcontraseña(contraseña, contraseñaConfirmar);
@@ -84,8 +102,14 @@ public class Menu {
 
         servicioStreaming.AgregarUsuario(usuario1);
 
-        servicioStreaming.leerenarchivo();
+
+
         servicioStreaming.mostrarUsuarios();
+
+
+
+
+
 
     }
 

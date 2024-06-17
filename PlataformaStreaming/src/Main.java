@@ -7,8 +7,11 @@ public class Main {
     public static void main(String[] args) {
 
 
-        Menu menu=new Menu();
-            menu.registrarse();
+       Menu menu=new Menu();
+        menu.iniciarSesion();
+
+
+
 
 
 
