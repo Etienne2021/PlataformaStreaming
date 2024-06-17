@@ -1,10 +1,14 @@
 package Interfaces;
 
+import java.util.HashSet;
+
 public interface ABM<T> {
 
 
-      void alta(T t);
-      void baja(T t);
-      void modificar(T t);
+      public String alta(HashSet<T>elementos);
+
+
+
+
 
 }

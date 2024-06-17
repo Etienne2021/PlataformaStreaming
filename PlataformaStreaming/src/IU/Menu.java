@@ -27,16 +27,15 @@ public class Menu {
             String contraseña=scanner.nextLine();
             try {
                 servicioStreaming.verificarsiexiste(nombre,contraseña);
+                System.out.println("Inicio de sesion exitoso");
+                servicioStreaming.agregarHistorialInicioSesion(nombre);
             } catch (UsuarioNoEncontradoException e) {
                 System.out.println("Error al iniciar sesión: " + e.getMessage());
             }
             break;
         }while (true);
 
-        System.out.println("Inicio de sesion exitoso");
-        servicioStreaming.agregarHistorialInicioSesion(nombre);
         servicioStreaming.mostrarHistorialInicioSesion(nombre);
-
 
     }
 

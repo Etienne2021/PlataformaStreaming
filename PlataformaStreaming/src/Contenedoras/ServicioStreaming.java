@@ -1,4 +1,6 @@
 package Contenedoras;
+import Contenido.Pelicula;
+import Contenido.Serie;
 import Usuario.Usuarios;
 import java.io.File;
 import java.io.IOException;
@@ -16,23 +18,19 @@ public class ServicioStreaming {
 
     private HashSet<Usuarios> usuariosHashSet;
     private TreeMap<String, List<String>> historialInicioSesion;
-    /*
-    private Usuarios usuarioLogeado;
-    private Perfil perfilSeleccionado;
-    private ArrayList<Pelicula> peliculas;
-    private HashMap<String, Serie> series;
-
-*/
+    private HashSet<Pelicula>pelicula;
+    private HashSet<Serie>series;
 
 
     public ServicioStreaming() {
 
         this.usuariosHashSet = new HashSet<>();
         this.historialInicioSesion = new TreeMap<>();
+        this.pelicula=new HashSet<>();
+        this.series=new HashSet<>();
         leerenarchivo();
         leerEnArchivoHistorial();
     }
-
 
 
 
@@ -62,13 +60,11 @@ public String  AgregarUsuario(Usuarios usuario) {
 }
 
 
-
 public void verificarsiexiste(String nombre,String Contraseña)throws UsuarioNoEncontradoException
 {
 
     for (Usuarios u : usuariosHashSet) {
         if (u.getNombre().equals(nombre) && u.getContraseña().equals(Contraseña)) {
-            System.out.println("Inicio de sesión exitoso");
             return;
         }
     }
@@ -186,6 +182,29 @@ public void verificarsiexiste(String nombre,String Contraseña)throws UsuarioNoE
             }
         }
     }
+
+/*
+    public String agregarpelicula(Pelicula pelicula)
+    {
+        if (!usuariosHashSet.contains(pelicula)) {
+            usuariosHashSet.add(pelicula);
+           //funcion guardar en archivo pelicula
+        }
+        return "Nueva pelicula agregada";
+    }
+
+
+    public String agregarserie(Serie serie)
+    {
+        if (!usuariosHashSet.contains(serie)) {
+            usuariosHashSet.add(serie);
+            //funcion guardar en archivo pelicula
+        }
+        return "Nueva serie agregada";
+
+    }
+
+*/
 
 
 
