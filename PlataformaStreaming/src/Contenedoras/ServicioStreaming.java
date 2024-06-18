@@ -1,6 +1,8 @@
 package Contenedoras;
+import Contenido.AudioVisual;
 import Contenido.Pelicula;
 import Contenido.Serie;
+import Interfaces.ABM;
 import Usuario.Usuarios;
 import java.io.File;
 import java.io.IOException;
@@ -14,19 +16,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-public class ServicioStreaming {
+public class ServicioStreaming implements ABM<AudioVisual>{
 
     private HashSet<Usuarios> usuariosHashSet;
     private TreeMap<String, List<String>> historialInicioSesion;
-    private HashSet<Pelicula>pelicula;
-    private HashSet<Serie>series;
+    private Set<Pelicula> peliculas;
+    private Set<Serie> series;
 
 
     public ServicioStreaming() {
 
         this.usuariosHashSet = new HashSet<>();
         this.historialInicioSesion = new TreeMap<>();
-        this.pelicula=new HashSet<>();
+        this.peliculas=new HashSet<>();
         this.series=new HashSet<>();
         leerenarchivo();
         leerEnArchivoHistorial();
@@ -34,43 +36,46 @@ public class ServicioStreaming {
 
 
 
-   public void validarcontraseña(String contraseña,String confirmacontraseña) throws ContraseñaNoCoincidenException
-   {
+    public void validarcontraseña(String contraseña,String confirmacontraseña) throws ContraseñaNoCoincidenException
+    {
 
-       if(!contraseña.equals(confirmacontraseña))
-       {
-           throw  new ContraseñaNoCoincidenException("Las contraseñas no coinciden");
-       }
-       if(contraseña.length()<8)
-       {
-           throw  new ContraseñaNoCoincidenException("La primer clave ingresada es muy pqueña,ingrese mas de 8 caracteres");
-       }
-
-   }
-
-
-
-public String  AgregarUsuario(Usuarios usuario) {
-
-    if (!usuariosHashSet.contains(usuario)) {
-        usuariosHashSet.add(usuario);
-        guardarenarchivo();
-    }
-     return "Nuevo usuario agregado";
-}
-
-
-public void verificarsiexiste(String nombre,String Contraseña)throws UsuarioNoEncontradoException
-{
-
-    for (Usuarios u : usuariosHashSet) {
-        if (u.getNombre().equals(nombre) && u.getContraseña().equals(Contraseña)) {
-            return;
+        if(!contraseña.equals(confirmacontraseña))
+        {
+            throw  new ContraseñaNoCoincidenException("Las contraseñas no coinciden");
         }
-    }
-    throw new UsuarioNoEncontradoException("Nombre de usuario o contraseña incorrecta");
+        if(contraseña.length()<8)
+        {
+            throw  new ContraseñaNoCoincidenException("La primer clave ingresada es muy pqueña,ingrese mas de 8 caracteres");
+        }
 
-}
+    }
+
+
+
+    public String  AgregarUsuario(Usuarios usuario) {
+
+        if (!usuariosHashSet.contains(usuario)) {
+            usuariosHashSet.add(usuario);
+            guardarenarchivo();
+        }
+        return "Nuevo usuario agregado";
+    }
+
+
+
+
+
+    public void verificarsiexiste(String nombre,String Contraseña)throws UsuarioNoEncontradoException
+    {
+
+        for (Usuarios u : usuariosHashSet) {
+            if (u.getNombre().equals(nombre) && u.getContraseña().equals(Contraseña)) {
+                return;
+            }
+        }
+        throw new UsuarioNoEncontradoException("Nombre de usuario o contraseña incorrecta");
+
+    }
 
 
 
@@ -83,21 +88,21 @@ public void verificarsiexiste(String nombre,String Contraseña)throws UsuarioNoE
     }
 
 
- public void guardarenarchivo()
- {
+    public void guardarenarchivo()
+    {
 
-     File file=new File("Usuarios.json");
-     ObjectMapper objectMapper=new ObjectMapper();
-     try
-     {
-         objectMapper.writeValue(file,usuariosHashSet);
-         System.out.println("Archivo guardado correctamente.");
+        File file=new File("Usuarios.json");
+        ObjectMapper objectMapper=new ObjectMapper();
+        try
+        {
+            objectMapper.writeValue(file,usuariosHashSet);
+            System.out.println("Archivo guardado correctamente.");
 
-     }catch (IOException e){
-         System.out.println("No se pudo guardar el archivo"+e.getMessage());
-     }
+        }catch (IOException e){
+            System.out.println("No se pudo guardar el archivo"+e.getMessage());
+        }
 
- }
+    }
 
 
 
@@ -183,36 +188,71 @@ public void verificarsiexiste(String nombre,String Contraseña)throws UsuarioNoE
         }
     }
 
-/*
-    public String agregarpelicula(Pelicula pelicula)
-    {
-        if (!usuariosHashSet.contains(pelicula)) {
-            usuariosHashSet.add(pelicula);
-           //funcion guardar en archivo pelicula
+
+
+
+    @Override
+    public boolean agregar(AudioVisual nuevoElemento) {
+        if(nuevoElemento instanceof Pelicula){
+            // Verificar si el título de la nueva película ya existe en el set
+            for (Pelicula elemento : peliculas) {
+                if (elemento.getTitulo().equalsIgnoreCase(nuevoElemento.getTitulo())) {
+                    System.out.println("Error: Esa Pelicula/Serie ya existe.");
+                    return false; // No se puede agregar la película
+                }
+            }
+
+            // Si el título no está repetido, agregar la película
+            peliculas.add((Pelicula) nuevoElemento);
+            System.out.println("Película/Serie agregada correctamente.");
+            return true;
         }
-        return "Nueva pelicula agregada";
+        else{
+            // Verificar si el título de la nueva película ya existe en el set
+            for (Serie elemento : series) {
+                if (elemento.getTitulo().equalsIgnoreCase(nuevoElemento.getTitulo())) {
+                    System.out.println("Error: Esa Pelicula/Serie ya existe.");
+                    return false; // No se puede agregar la película
+                }
+            }
+
+            // Si el título no está repetido, agregar la película
+            series.add((Serie) nuevoElemento);
+            System.out.println("Película/Serie agregada correctamente.");
+            return true;
+
+        }
+    }
+
+    /*public String eliminar(String titulo) {
+        // Verificar si el título de la nueva película ya existe en el set
+        for (T elemento : peliculas) {
+            if (elemento.getTitulo().equals(titulo)){
+                peliculas.remove(elemento);
+                return "La pelicula/Serie se elimino con exito.";
+            }
+            else {
+                return "La Pelicula/Serie no se encuentra.";
+            }
+        }
+        return null;
     }
 
 
-    public String agregarserie(Serie serie)
-    {
-        if (!usuariosHashSet.contains(serie)) {
-            usuariosHashSet.add(serie);
-            //funcion guardar en archivo pelicula
-        }
-        return "Nueva serie agregada";
-
+    public void modificar(T elemento) {
+        // Implementar lógica para modificar un objeto
     }
-
 */
-
-
-
-
-
-
-
-
+    public void mostrarpelicula() {
+        System.out.println("Peliculas cargadas \n\n:");
+        if (peliculas.isEmpty()) {
+            System.out.println("No hay peliculas");
+        } else {
+            for (Pelicula pelicula : peliculas) {
+                System.out.println("Pelicula cargada: " + pelicula);
+            }
+        }
+    }
 
 
 
@@ -227,4 +267,6 @@ public void verificarsiexiste(String nombre,String Contraseña)throws UsuarioNoE
     public int hashCode() {
         return Objects.hashCode(usuariosHashSet);
     }
+
+
 }
