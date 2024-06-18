@@ -1,6 +1,11 @@
 package Contenido;
 
 import Excepciones.InvalidRatingException;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.ArrayList;
 
 public  abstract class  AudioVisual {
 
@@ -14,8 +19,7 @@ public  abstract class  AudioVisual {
 
     protected boolean estado;
 
-
-
+    @JsonIgnoreProperties
     public AudioVisual(String titulo, String genero, int año, int calificacion, boolean estado) {
         this.titulo = titulo;
         this.genero = genero;

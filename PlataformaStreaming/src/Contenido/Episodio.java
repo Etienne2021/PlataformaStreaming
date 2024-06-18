@@ -1,5 +1,7 @@
 package Contenido;
 import Excepciones.InvalidRatingException;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 import java.util.Scanner;
@@ -10,8 +12,10 @@ public class Episodio {
     private int nrocap;
     private double duracionEp;
 
-
-    public Episodio(String titulo, int nrocap, double duracionEp) {
+    @JsonCreator
+    public Episodio(@JsonProperty("titulo") String titulo,
+                    @JsonProperty("nrocap") int nrocap,
+                    @JsonProperty("duracionEp") double duracionEp) {
         this.titulo = titulo;
         this.nrocap = nrocap;
         this.duracionEp = duracionEp;
@@ -74,6 +78,15 @@ public class Episodio {
         }while(opcion != 0);
 
         // return inicio!!!
+    }
+
+    @Override
+    public String toString() {
+        return "Episodio{" +
+                "titulo='" + titulo + '\'' +
+                ", nrocap=" + nrocap +
+                ", duracionEp=" + duracionEp +
+                '}';
     }
 
     @Override

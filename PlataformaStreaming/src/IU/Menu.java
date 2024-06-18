@@ -2,7 +2,9 @@ package IU;
 
 import Contenedoras.ServicioStreaming;
 import Contenido.AudioVisual;
+import Contenido.Episodio;
 import Contenido.Pelicula;
+import Contenido.Serie;
 import Excepciones.*;
 import Usuario.Administrador;
 import Usuario.Perfil;
@@ -12,6 +14,7 @@ import Usuario.Usuarios;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Menu {
 
@@ -98,6 +101,9 @@ public class Menu {
         //menu admin
 
         cargarPelicula();
+        cargarserie();
+        eliminar();
+        modificar();
 
 
         return esadmin;
@@ -172,10 +178,45 @@ public class Menu {
         servicioStreaming.agregar(nuevaPelicula3);
 
         servicioStreaming.mostrarpelicula();
-
-
     }
 
+    public void cargarserie()
+    {
+
+        Serie breakingBad = new Serie("Breaking Bad", "Drama", 2008, 5, true);
+        Episodio episodio1 = new Episodio("Piloto", 1, 45.5);
+        Episodio episodio2 = new Episodio("Cat's in the Bag...", 2, 48.0);
+        Episodio episodio3 = new Episodio("...And the Bag's in the River", 3, 47.3);
+        breakingBad.agregarEpisodio(episodio1);
+        breakingBad.agregarEpisodio(episodio2);
+        breakingBad.agregarEpisodio(episodio3);
+        servicioStreaming.agregar(breakingBad);
+        servicioStreaming.mostrarseries();
+    }
+
+
+
+
+
+   public void eliminar()
+   {
+       System.out.println("Ingrese el titulo de la pelicula");
+       String titulo=scanner.nextLine();
+     AudioVisual elemento= servicioStreaming.buscarPorTitulo(titulo);
+     servicioStreaming.eliminar(elemento);
+       servicioStreaming.mostrarpelicula();
+
+   }
+
+public void modificar()
+{
+    System.out.println("Ingrese el titulo de la pelicula");
+    String titulo=scanner.nextLine();
+    AudioVisual elemento= servicioStreaming.buscarPorTitulo(titulo);
+    System.out.println(elemento);
+    servicioStreaming.modificarestado(elemento);
+    servicioStreaming.mostrarpelicula();
+}
 
 
 
