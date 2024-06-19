@@ -9,6 +9,7 @@ import Excepciones.*;
 import Usuario.Administrador;
 import Usuario.Perfil;
 import Usuario.Usuarios;
+import Excepciones.*;
 
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class Menu {
     Administrador administrador=new Administrador("Admin","12345678",true);
 
 
-    public void menuprincipal(){
+    public void menuprincipal() throws InvalidRatingException {
         int opcion;
         Scanner scanner = new Scanner(System.in);
 
@@ -32,6 +33,7 @@ public class Menu {
 
         switch (opcion){
             case 1: iniciarSesion();
+                     menuUsuario();
                 break;
             case 2: registrarse();
                 break;
@@ -109,7 +111,7 @@ public class Menu {
         return esadmin;
     }
 
-    public void registrarse() {
+    public void registrarse() throws InvalidRatingException {
 
 
         String nombre;
@@ -217,6 +219,84 @@ public void modificar()
     servicioStreaming.modificarestado(elemento);
     servicioStreaming.mostrarpelicula();
 }
+
+
+    public void menuUsuario() throws InvalidRatingException {
+        int opcion;
+        AudioVisual retorno;
+        Scanner scanner = new Scanner(System.in);
+        boolean paso = false;
+        System.out.println("Ingrese: \n 1- Quiero ver una Pelicula \n 2- Quiero ver una Serie \n 3- Salir \n \n");
+        opcion = scanner.nextInt();
+
+            switch (opcion) {
+                case 1:
+                    servicioStreaming.mostrarpelicula();
+                    System.out.println("\n\n");
+                    scanner.nextLine();
+                    System.out.println("Ingrese el nombre de la pelicula que desea ver: ");
+                    String titulo = scanner.nextLine();
+                    System.out.println("LLEEEEEGUEEEEEE");
+                    retorno = servicioStreaming.buscarPorTitulo(titulo);
+                    if(retorno instanceof Pelicula){
+                        servicioStreaming.reproducirpelicula((Pelicula) retorno);
+                        System.out.println("\n\n");
+                        System.out.println("Ingrese su calificacion al episodio del 1 al 5: ");
+                        opcion = scanner.nextInt();
+                        servicioStreaming.calificacion(opcion,retorno);
+                    }
+                    else{
+                        System.out.println("\n\n");
+                        System.out.println("Titulo incorrecto. \n");
+                        menuUsuario();
+                    }
+                    break;
+                case 2:
+                    servicioStreaming.mostrarseries();
+                    System.out.println("\n\n");
+                    scanner.nextLine();
+                    System.out.println("Ingrese el nombre de la serie que desea ver: ");
+                     String tituloserie = scanner.nextLine();
+                    System.out.println("LLEEEEEGUEEEEEE");
+                    retorno = servicioStreaming.buscarPorTitulo(tituloserie);
+                    if(retorno instanceof Serie){
+
+                            servicioStreaming.reproducirserie((Serie) retorno);
+                            System.out.println("\n\n");
+                            System.out.println("Ingrese su calificacion al episodio del 1 al 5: ");
+                            opcion = scanner.nextInt();
+                            servicioStreaming.calificacion(opcion,retorno);
+                            int opcion1;
+
+                            do {
+                                System.out.println(" 1-Volver al menu.  2-Reproducir otro capitulo");
+                                opcion1=scanner.nextInt();
+
+                                if(opcion1==1)
+                                {
+                                    menuUsuario();
+                                }
+                                 if(opcion1==2)
+                                {
+                                    servicioStreaming.reproducirserie((Serie) retorno);
+                                }
+                            }while (opcion1!=1 || opcion1!=2);
+                    }
+                    else{
+                        System.out.println("\n\n");
+                        System.out.println("Titulo incorrecto. \n");
+                        menuUsuario();
+                    }
+                    break;
+                case 3:
+                    menuprincipal();
+                    break;
+                default:
+                    System.out.println("Numero ingresado incorrecto.");
+                    menuUsuario();
+                    break;
+            }
+    }
 
 
 

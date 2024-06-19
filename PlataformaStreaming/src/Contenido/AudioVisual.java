@@ -68,15 +68,4 @@ public  abstract class  AudioVisual {
         this.estado = estado;
     }
 
-    public  abstract void reproducir();
-
- public  abstract void calificacion(int calificacion) throws InvalidRatingException;
-
-
-
-
-
-
-
-
 }

@@ -1,7 +1,9 @@
 package Contenedoras;
 import Contenido.AudioVisual;
+import Contenido.Episodio;
 import Contenido.Pelicula;
 import Contenido.Serie;
+import IU.Menu;
 import Interfaces.ABM;
 import Usuario.Usuarios;
 import java.io.File;
@@ -335,6 +337,127 @@ public class ServicioStreaming implements ABM<AudioVisual> {
             System.out.println("No se pudo cargar el archivo de series: " + e.getMessage());
         }
     }
+
+
+    public void reproducirserie(Serie serie) {
+        Menu menu=new Menu();
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\nUsted esta por reproducir la serie: " + serie.getTitulo());
+        System.out.println("\n\n");
+        int opcion;
+        int nummin = 1;
+        int nummax = serie.getEpisodios().size();
+        do {
+            System.out.println("\nIngrese el numero de episodio que desea reproducir: ");
+            opcion = scanner.nextInt();
+
+        }while(opcion<nummin || opcion>nummax);
+
+        System.out.println("\nSe va a reproducir el  episodio ... \n\n"+buscarepisodio(opcion,serie));
+        System.out.println("\nIngrese 1 para poner pausa o 0 para salir.");
+        opcion = scanner.nextInt();
+
+        do {
+
+            if (opcion == 1) {
+                System.out.println("\nEl episodio esta en pausa... \n\n");
+                System.out.println("\nIngrese 2 para continuar con el episodio o 0 para salir.");
+                opcion = scanner.nextInt();
+            } else if (opcion == 2) {
+                System.out.println("\nEl episodio se esta reproduciendo... \n\n");
+                System.out.println("\nIngrese 1 para poner pausa o 0 para salir.");
+                opcion = scanner.nextInt();
+            } else {
+                System.out.println("\nCaracter invalido.");
+                System.out.println("\nIngrese otro caracter.");
+            }
+
+        } while (opcion != 0);
+
+
+
+
+
+
+
+
+
+
+        //volver menuusuario.
+    }
+
+
+
+
+
+
+    public String buscarepisodio(int numerocap,Serie serie)
+    {
+
+     Set<Episodio>episodio=new HashSet<>();
+     episodio=serie.getEpisodios();
+
+     for(Episodio episodios: episodio)
+     {
+         if(episodios.getNroCap()==numerocap)
+         {
+             return  episodios.getTitulo();
+         }
+     }
+     return "No se encontro";
+    }
+
+
+    public void reproducirpelicula(Pelicula pelicula) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\nReproduciendo Pelicula: " + pelicula.getTitulo());
+        System.out.println("\n\n");
+        int opcion;
+        System.out.println("\nIngrese 1 para poner pausa o 0 para salir.");
+        opcion = scanner.nextInt();
+        do{
+            if (opcion == 1) {
+                System.out.println("\nLa Pelicula esta en pausa... \n\n");
+                System.out.println("\nIngrese 2 para continuar con la pelicula o 0 para salir.");
+                opcion = scanner.nextInt();
+            }
+            else if (opcion == 2){
+                System.out.println("\nLa pelicula se esta reproduciendo... \n\n");
+                System.out.println("\nIngrese 1 para poner pausa o 0 para salir.");
+                opcion = scanner.nextInt();
+            }
+            else {
+                System.out.println("\nCaracter invalido.");
+                System.out.println("\nIngrese otro caracter.");
+                opcion=scanner.nextInt();
+            }
+        }while(opcion != 0);
+
+    }
+
+    public void calificacion(int calificacion,AudioVisual elemento) throws InvalidRatingException
+    {
+        if(calificacion<1 && calificacion>5)
+        {
+            throw new InvalidRatingException("Calificacion invalida,debe ser entre 1 y 5");
+
+        }else {
+
+            if(elemento instanceof Serie)
+            {
+                System.out.println("Usted califico el episodio con"+calificacion+"estrella");
+            }
+            else
+            {
+                System.out.println("Usted califico la pelicula con"+calificacion+"estrella");
+            }
+
+        }
+    }
+
+
+
+
 
 
 

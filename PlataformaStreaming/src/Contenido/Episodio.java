@@ -9,17 +9,19 @@ import java.util.Scanner;
 public class Episodio {
 
     private String titulo;
-    private int nrocap;
+    private double nrocap;
     private double duracionEp;
 
     @JsonCreator
     public Episodio(@JsonProperty("titulo") String titulo,
-                    @JsonProperty("nrocap") int nrocap,
+                    @JsonProperty("nrocap") double nrocap,
                     @JsonProperty("duracionEp") double duracionEp) {
         this.titulo = titulo;
         this.nrocap = nrocap;
         this.duracionEp = duracionEp;
     }
+
+
 
     public void calificar(int calificacion) throws InvalidRatingException {
         if (calificacion < 1 || calificacion > 5) {
@@ -37,11 +39,11 @@ public class Episodio {
         this.titulo = titulo;
     }
 
-    public int getNroCap() {
+    public double getNroCap() {
         return nrocap;
     }
 
-    public void setNroCap(int nroCap) {
+    public void setNroCap(double nroCap) {
         this.nrocap = nrocap;
     }
 
@@ -53,32 +55,10 @@ public class Episodio {
         this.duracionEp = duracionEp;
     }
 
-    public void reproducir() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("\nReproduciendo episodio: " + titulo + " (CapÃtulo " + nrocap );
-        System.out.println("\n\n");
-        int opcion;
-        System.out.println("\nIngrese 1 para poner pausa o 0 para salir.");
-        opcion = scanner.nextInt();
-        do{
-            if (opcion == 1) {
-                System.out.println("\nEl episodio esta en pausa... \n\n");
-                System.out.println("\nIngrese 2 para continuar con el episodio o 0 para salir.");
-                opcion = scanner.nextInt();
-            }
-            else if (opcion == 2){
-                System.out.println("\nEl episodio se esta reproduciendo... \n\n");
-                System.out.println("\nIngrese 1 para poner pausa o 0 para salir.");
-                opcion = scanner.nextInt();
-            }
-            else {
-                System.out.println("\nCaracter invalido.");
-                System.out.println("\nIngrese otro caracter.");
-            }
-        }while(opcion != 0);
 
-        // return inicio!!!
-    }
+
+
+
 
     @Override
     public String toString() {
