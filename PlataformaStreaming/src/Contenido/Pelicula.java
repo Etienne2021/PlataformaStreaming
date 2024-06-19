@@ -1,6 +1,8 @@
 package Contenido;
 
 import Excepciones.InvalidRatingException;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Scanner;
 
@@ -9,14 +11,17 @@ public class Pelicula extends AudioVisual{
 
     private double duracion;
 
-    public Pelicula(String titulo, String genero, int año, int calificacion, boolean estado, double duracion) {
+    @JsonCreator
+    public Pelicula(
+            @JsonProperty("titulo") String titulo,
+            @JsonProperty("genero") String genero,
+            @JsonProperty("año") int año,
+            @JsonProperty("calificacion") int calificacion,
+            @JsonProperty("estado") boolean estado,
+            @JsonProperty("duracion") double duracion) {
         super(titulo, genero, año, calificacion, estado);
         this.duracion = duracion;
     }
-
-
-
-
 
 
     public void calificacion(int calificacion) throws InvalidRatingException

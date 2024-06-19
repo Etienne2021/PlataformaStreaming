@@ -375,14 +375,6 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         } while (opcion != 0);
 
 
-
-
-
-
-
-
-
-
         //volver menuusuario.
     }
 
@@ -399,7 +391,7 @@ public class ServicioStreaming implements ABM<AudioVisual> {
 
      for(Episodio episodios: episodio)
      {
-         if(episodios.getNroCap()==numerocap)
+         if(episodios.getNrocap()==numerocap)
          {
              return  episodios.getTitulo();
          }
@@ -426,18 +418,18 @@ public class ServicioStreaming implements ABM<AudioVisual> {
                 System.out.println("\nIngrese 1 para poner pausa o 0 para salir.");
                 opcion = scanner.nextInt();
             }
-            else {
+            else if (opcion != 0) {
                 System.out.println("\nCaracter invalido.");
                 System.out.println("\nIngrese otro caracter.");
-                opcion=scanner.nextInt();
             }
-        }while(opcion != 0);
+        } while (opcion != 0);
 
+        System.out.println("\nSaliendo de la reproducción de la película.");
     }
 
     public void calificacion(int calificacion,AudioVisual elemento) throws InvalidRatingException
     {
-        if(calificacion<1 && calificacion>5)
+        if(calificacion<1  || calificacion>5)
         {
             throw new InvalidRatingException("Calificacion invalida,debe ser entre 1 y 5");
 

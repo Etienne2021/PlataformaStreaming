@@ -29,7 +29,6 @@ public class Serie extends AudioVisual {
         this.episodios = new HashSet<>();
     }
 
-
     public void agregarEpisodio(Episodio episodio) {
         episodios.add(episodio);
     }

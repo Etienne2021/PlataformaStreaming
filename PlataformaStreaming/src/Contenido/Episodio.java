@@ -9,12 +9,12 @@ import java.util.Scanner;
 public class Episodio {
 
     private String titulo;
-    private double nrocap;
+    private int nrocap;
     private double duracionEp;
 
     @JsonCreator
     public Episodio(@JsonProperty("titulo") String titulo,
-                    @JsonProperty("nrocap") double nrocap,
+                    @JsonProperty("nrocap") int nrocap,
                     @JsonProperty("duracionEp") double duracionEp) {
         this.titulo = titulo;
         this.nrocap = nrocap;
@@ -30,7 +30,6 @@ public class Episodio {
         System.out.println("Has calificado el episodio " + titulo + " con " + calificacion + " estrellas.");
     }
 
-    // Getters y Setters
     public String getTitulo() {
         return titulo;
     }
@@ -39,11 +38,11 @@ public class Episodio {
         this.titulo = titulo;
     }
 
-    public double getNroCap() {
+    public int getNrocap() {
         return nrocap;
     }
 
-    public void setNroCap(double nroCap) {
+    public void setNrocap(int nrocap) {
         this.nrocap = nrocap;
     }
 
@@ -55,11 +54,6 @@ public class Episodio {
         this.duracionEp = duracionEp;
     }
 
-
-
-
-
-
     @Override
     public String toString() {
         return "Episodio{" +
@@ -69,16 +63,6 @@ public class Episodio {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Episodio episodio)) return false;
-        return nrocap == episodio.nrocap && Double.compare(getDuracionEp(), episodio.getDuracionEp()) == 0 && Objects.equals(getTitulo(), episodio.getTitulo());
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getTitulo(), nrocap, getDuracionEp());
-    }
 
 }

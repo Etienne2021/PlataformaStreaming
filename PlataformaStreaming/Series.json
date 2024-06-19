@@ -1,1 +1,1 @@
-[{"titulo":"Breaking Bad","genero":"Drama","año":2008,"calificacion":5,"estado":true,"episodios":[{"titulo":"Piloto","duracionEp":45.5,"nroCap":1},{"titulo":"...And the Bag's in the River","duracionEp":47.3,"nroCap":3},{"titulo":"Cat's in the Bag...","duracionEp":48.0,"nroCap":2}]}]
+[{"titulo":"Breaking Bad","genero":"Drama","año":2008,"calificacion":5,"estado":true,"episodios":[{"titulo":"...And the Bag's in the River","nrocap":3,"duracionEp":47.3},{"titulo":"Piloto","nrocap":1,"duracionEp":45.5},{"titulo":"Cat's in the Bag...","nrocap":2,"duracionEp":48.0}]}]
