@@ -79,7 +79,7 @@ public class Menu {
 
     }
 
-    public boolean iniciarSesioncomoAdmin() {
+    public void iniciarSesioncomoAdmin() {
 
         String nombre;
         boolean esadmin = false;
@@ -98,17 +98,65 @@ public class Menu {
             }
         } while (esadmin == false);
 
-
-        //menu admin
-
-        cargarPelicula();
-        cargarserie();
-        eliminar();
-        modificar();
+        // Una vez iniciada la sesión como admin, se muestra el menú de administrador
+        if (esadmin) {
+            menuAdmin();
+        }
 
 
-        return esadmin;
     }
+
+    public void menuAdmin() {
+        int opcion;
+        boolean salir = false;
+
+        while (!salir) {
+            System.out.println("\n-- Menú de Administrador --");
+            System.out.println("Seleccione una opción:");
+            System.out.println("1. Cargar Película");
+            System.out.println("2. Cargar Serie");
+            System.out.println("3. Eliminar");
+            System.out.println("4. Modificar Estado");
+            System.out.println("5. Salir");
+
+            opcion = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcion) {
+                case 1:
+                    cargarPelicula();
+                    break;
+                case 2:
+                    cargarserie();
+                    break;
+                case 3:
+                    eliminar();
+                    break;
+                case 4:
+                    modificar();
+                    break;
+                case 5:
+                    salir = true;
+                    System.out.println("Sesión de administrador finalizada.");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Por favor, seleccione una opción válida.");
+                    break;
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void registrarse() throws InvalidRatingException {
 
@@ -166,30 +214,78 @@ public class Menu {
     }
 
     public void cargarPelicula() {
-        Pelicula nuevaPelicula = new Pelicula("Cars", "Animada", 2000, 5, true, 140);
-        Pelicula nuevaPelicula2 = new Pelicula("Rapido y Furioso", "Accion", 1993, 5, true, 140);
-        Pelicula nuevaPelicula3 = new Pelicula("El señor de los Anillos", "Historia", 1985, 4, true, 140);
+        Scanner scanner = new Scanner(System.in);
 
-        HashSet<AudioVisual> peliculas = new HashSet<>();
+        System.out.println("Ingrese los datos de la película:");
+        System.out.print("Título: ");
+        String titulo = scanner.nextLine();
+        System.out.print("Género: ");
+        String genero = scanner.nextLine();
+        System.out.print("Año de lanzamiento: ");
+        int año = scanner.nextInt();
+        System.out.print("Calificación: ");
+        int calificacion = scanner.nextInt();
+        System.out.print("Disponible (1-Sí / 0-No): ");
+        boolean disponible = scanner.nextInt() == 1;
+        System.out.print("Duración (en minutos): ");
+        int duracion = scanner.nextInt();
 
+        Pelicula nuevaPelicula = new Pelicula(titulo, genero, año, calificacion, disponible, duracion);
         servicioStreaming.agregar(nuevaPelicula);
-        servicioStreaming.agregar(nuevaPelicula2);
-        servicioStreaming.agregar(nuevaPelicula3);
 
-        servicioStreaming.mostrarpelicula();
+        System.out.println("Película cargada exitosamente:");
+        System.out.println(nuevaPelicula);
+
+        scanner.nextLine(); // Limpiar el buffer del scanner
     }
 
     public void cargarserie() {
 
-        Serie breakingBad = new Serie("Breaking Bad", "Drama", 2008, 5, true);
-        Episodio episodio1 = new Episodio("Piloto", 1, 45.5);
-        Episodio episodio2 = new Episodio("Cat's in the Bag...", 2, 48.0);
-        Episodio episodio3 = new Episodio("...And the Bag's in the River", 3, 47.3);
-        breakingBad.agregarEpisodio(episodio1);
-        breakingBad.agregarEpisodio(episodio2);
-        breakingBad.agregarEpisodio(episodio3);
-        servicioStreaming.agregar(breakingBad);
-        servicioStreaming.mostrarseries();
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Ingrese los datos de la serie:");
+        System.out.print("Título: ");
+        String titulo = scanner.nextLine();
+        System.out.print("Género: ");
+        String genero = scanner.nextLine();
+        System.out.print("Año de lanzamiento: ");
+        int año = scanner.nextInt();
+        System.out.print("Calificación: ");
+        int calificacion = scanner.nextInt();
+        System.out.print("Disponible (1-Sí / 0-No): ");
+        boolean disponible = scanner.nextInt() == 1;
+
+        Serie nuevaSerie = new Serie(titulo, genero, año, calificacion, disponible);
+
+        // Agregar episodios
+        boolean agregarEpisodios = true;
+        while (agregarEpisodios) {
+            scanner.nextLine(); // Limpiar el buffer del scanner
+            System.out.println("Ingrese los datos de un episodio:");
+            System.out.print("Nombre del episodio: ");
+            String nombreEpisodio = scanner.nextLine();
+            System.out.print("Número del episodio: ");
+            int numeroEpisodio = scanner.nextInt();
+            System.out.print("Duración del episodio (en minutos): ");
+            double duracionEpisodio = scanner.nextDouble();
+
+            Episodio episodio = new Episodio(nombreEpisodio, numeroEpisodio, duracionEpisodio);
+            nuevaSerie.agregarEpisodio(episodio);
+
+            System.out.print("¿Desea agregar otro episodio? (1-Sí / 0-No): ");
+            int opcion = scanner.nextInt();
+            if(opcion==0)
+            {
+                agregarEpisodios=false;
+            }
+        }
+
+        servicioStreaming.agregar(nuevaSerie);
+
+        System.out.println("Serie cargada exitosamente:");
+        System.out.println(nuevaSerie);
+
+        scanner.nextLine();
     }
 
 
