@@ -81,6 +81,17 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         }
     }
 
+
+    public boolean verificarsiexisteusuarioparahistorial(String nombre) {
+        for (Usuarios u : usuariosHashSet) {
+            if (u.getNombre().equals(nombre)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public boolean verificarexisteperfil(String nombreperfil,Usuarios usuarios)
     {
         ArrayList<Perfil>perfiles=new ArrayList<>();
@@ -238,9 +249,7 @@ public class ServicioStreaming implements ABM<AudioVisual> {
                 {
                     return pelicula;
                 }
-
             }
-
         }
         for (Serie serie : series) {
             if (serie.getTitulo().equalsIgnoreCase(titulo)) {
@@ -253,6 +262,23 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         }
         return null;
     }
+
+    public Usuarios buscarUsuarioPorNombre(String nombre) {
+        for (Usuarios usuario : usuariosHashSet) {
+            if (usuario.getNombre().equalsIgnoreCase(nombre)) {
+                return usuario;
+            }
+        }
+        return null;
+    }
+
+public void eliminarUsuario(Usuarios usuario)
+{
+    usuariosHashSet.remove(usuario);
+    guardarenarchivo();
+}
+
+
 
 
     public void eliminar(AudioVisual elemento) {
@@ -332,8 +358,6 @@ public class ServicioStreaming implements ABM<AudioVisual> {
             }
         }
     }
-
-
 
 
     public void mostrarseries()

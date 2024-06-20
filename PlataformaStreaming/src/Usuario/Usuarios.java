@@ -48,10 +48,21 @@ public class Usuarios {
         perfiles.add(perfil);
     }
 
+    public void eliminarPerfil(String nombrePerfil) {
 
-    public void eliminarPerfil(Perfil perfil) {
-        perfiles.remove(perfil);
+        Perfil perfilAEliminar = null;
+        for (Perfil perfil : perfiles) {
+            if (perfil.getNombre().equals(nombrePerfil)) {
+                perfilAEliminar = perfil;
+                break;
+            }
+        }
+        if (perfilAEliminar != null) {
+            perfiles.remove(perfilAEliminar);
+        }
     }
+
+
 
     public String getNombre() {
         return Nombre;

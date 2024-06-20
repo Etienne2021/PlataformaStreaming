@@ -68,6 +68,8 @@ public class Menu {
                 do {
                     System.out.println("1-seleccionar  perfil");
                     System.out.println("2-crear nuevo perfil");
+                    System.out.println("3-eliminar perfil");
+
                     opcionperfil=scanner.nextInt();
                     scanner.nextLine();
                     boolean existe;
@@ -88,14 +90,36 @@ public class Menu {
                         Perfil perfilnuevo= new Perfil(nombre);
                         usuarioactual.agregarPerfil(perfilnuevo);
                         servicioStreaming.guardarenarchivo();
+                    }else if(opcionperfil==3)
+                    {
+                        ArrayList<Perfil> perfiles = usuarioactual.getPerfiles();
+                        if (perfiles.isEmpty()) {
+                            System.out.println("No hay perfiles cargados para el usuario actual.");
+                            return; // Salir si no hay perfiles cargados
+                        }
+                        do {
+                            System.out.println("Ingrese el nombre del perfil que quiere eliminar");
+                            nombre=scanner.nextLine();
+                            existe=servicioStreaming.verificarexisteperfil(nombre,usuarioactual);
+                            if(existe)
+                            {
+                                usuarioactual.eliminarPerfil(nombre);
+                                System.out.println("Perfil eliminado correctamente");
+                                servicioStreaming.guardarenarchivo();
+                            }
+                            else
+                            {
+                                System.out.println("El perfil no existe");
+                            }
+
+                        }while (!existe);
+
                     }
+
                     else {
                         System.out.println("Opcion incorrecta");
                     }
                 }while (opcionperfil!=1);
-
-
-
 
                 servicioStreaming.agregarHistorialInicioSesion(nombre);
             } catch (UsuarioNoEncontradoException e) {
@@ -105,11 +129,12 @@ public class Menu {
             break;
         } while (true);
 
-        servicioStreaming.mostrarHistorialInicioSesion(nombre);
-
-        //menuusuario
 
     }
+
+
+
+
 
 
     public void cerrarSesion() {
@@ -154,27 +179,51 @@ public class Menu {
             System.out.println("Seleccione una opción:");
             System.out.println("1. Cargar Película");
             System.out.println("2. Cargar Serie");
-            System.out.println("3. Eliminar");
+            System.out.println("3. Eliminar Pelicula o Serie");
             System.out.println("4. Modificar Estado");
-            System.out.println("5. Salir");
+            System.out.println("5. Eliminar Usuario");
+            System.out.println("6. ver todas las peliculas y series");
+            System.out.println("7. ver todos los usuarios registrados");
+            System.out.println("8. Mostrar historial inicio de sesion de un usuario");
+            System.out.println("8. Salir");
 
             opcion = scanner.nextInt();
             scanner.nextLine();
 
             switch (opcion) {
                 case 1:
+                    servicioStreaming.mostrarpelicula();
                     cargarPelicula();
                     break;
                 case 2:
+                    servicioStreaming.mostrarseries();
                     cargarserie();
                     break;
                 case 3:
+                    servicioStreaming.mostrarpelicula();
+                    servicioStreaming.mostrarseries();
                     eliminar();
                     break;
                 case 4:
+                    servicioStreaming.mostrarpelicula();
+                    servicioStreaming.mostrarseries();
                     modificar();
                     break;
                 case 5:
+                    servicioStreaming.mostrarUsuarios();
+                    eliminarUsuario();
+                case 6:
+                    servicioStreaming.mostrarpelicula();
+                    servicioStreaming.mostrarseries();
+                case 7:
+                    servicioStreaming.mostrarUsuarios();
+
+                      break;
+                case 8:
+                    mostrarHistorialSiExiste();
+                    break;
+
+                case 9:
                     salir = true;
                     System.out.println("Sesión de administrador finalizada.");
                     break;
@@ -185,16 +234,20 @@ public class Menu {
         }
     }
 
+    public void mostrarHistorialSiExiste() {
 
-
-
-
-
-
-
-
-
-
+        boolean usuarioEncontrado;
+        do {
+            System.out.println("Ingrese el nombre del usuario:");
+            String nombre = scanner.nextLine();
+            usuarioEncontrado = servicioStreaming.verificarsiexisteusuarioparahistorial(nombre);
+            if (usuarioEncontrado) {
+                servicioStreaming.mostrarHistorialInicioSesion(nombre);
+            } else {
+                System.out.println("Usuario no encontrado. Por favor, intente de nuevo.");
+            }
+        } while (!usuarioEncontrado);
+        }
 
 
     public void registrarse() throws InvalidRatingException {
@@ -336,6 +389,27 @@ public class Menu {
         servicioStreaming.mostrarpelicula();
 
     }
+
+
+    public void eliminarUsuario() {
+        boolean existe = true;
+        while (existe) {
+            System.out.println("Ingrese el nombre del usuario:");
+            String nombre = scanner.nextLine();
+            Usuarios usuarioBorrar = servicioStreaming.buscarUsuarioPorNombre(nombre);
+            if (usuarioBorrar == null) {
+                System.out.println("Usuario no encontrado. Intente nuevamente.");
+            } else {
+
+                servicioStreaming.eliminarUsuario(usuarioBorrar);
+                System.out.println("Usuario eliminado con éxito.");
+                existe = false; // Salir del ciclo
+            }
+        }
+    }
+
+
+
 
     public void modificar() {
         System.out.println("Ingrese el titulo de la pelicula");
