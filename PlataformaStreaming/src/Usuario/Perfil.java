@@ -16,8 +16,6 @@ public class Perfil {
         this.nombre = nombre;
     }
 
-
-
     public String getNombre() {
         return nombre;
     }

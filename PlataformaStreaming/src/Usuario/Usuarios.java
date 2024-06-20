@@ -63,7 +63,6 @@ public class Usuarios {
     }
 
 
-
     public String getNombre() {
         return Nombre;
     }
@@ -91,6 +90,16 @@ public class Usuarios {
     public ArrayList<Perfil> getPerfiles() {
         return perfiles;
     }
+
+    public Perfil getPerfil(String nombre) {
+        for (Perfil perfil : perfiles) {
+            if (perfil.getNombre().equalsIgnoreCase(nombre)) {
+                return perfil;
+            }
+        }
+        return null; // O lanzar una excepción si prefieres manejar perfiles no encontrados de otra manera
+    }
+
 
     public void setPerfiles(ArrayList<Perfil> perfiles) {
         this.perfiles = perfiles;

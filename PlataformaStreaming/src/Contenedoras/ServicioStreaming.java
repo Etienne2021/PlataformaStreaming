@@ -3,7 +3,6 @@ import Contenido.AudioVisual;
 import Contenido.Episodio;
 import Contenido.Pelicula;
 import Contenido.Serie;
-import IU.Menu;
 import Interfaces.ABM;
 import Usuario.Usuarios;
 import java.io.File;
@@ -24,6 +23,7 @@ public class ServicioStreaming implements ABM<AudioVisual> {
     private TreeMap<String, List<String>> historialInicioSesion;
     private Set<Pelicula> peliculas;
     private Set<Serie> series;
+    private ArrayList<String> historialvistos;
 
 
     public ServicioStreaming() {
@@ -32,10 +32,12 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         this.historialInicioSesion = new TreeMap<>();
         this.peliculas = new HashSet<>();
         this.series = new HashSet<>();
+        this.historialvistos = new ArrayList<>();
         leerenarchivo();
         leerEnArchivoHistorial();
         cargarPeliculasDesdeArchivo();
         cargarSeriesDesdeArchivo();
+        leerHistorialVistosDesdeArchivo();
     }
 
 
@@ -110,6 +112,7 @@ public class ServicioStreaming implements ABM<AudioVisual> {
 
 
 
+
     public void guardarenarchivo() {
 
         File file = new File("Usuarios.json");
@@ -123,6 +126,45 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         }
 
     }
+
+    public void mostrarHistorialVistosPorUsuario(String nombreusuario) {
+        boolean encontrado = false;
+        for (String visualizacion : historialvistos) {
+            if (visualizacion.startsWith(nombreusuario + " vio ")) {
+                System.out.println(visualizacion);
+                encontrado = true;
+            }
+        }
+        if (!encontrado) {
+            System.out.println("No se encontró ningún historial de visualizaciones para el usuario: " + nombreusuario);
+        }
+    }
+
+
+
+
+    public void agregarVisualizacion(String nombreUsuario, String tituloVisualizado) {
+        String visualizacion = nombreUsuario + " vio " + tituloVisualizado;
+        historialvistos.add(visualizacion);
+        guardarenarchivohistorialvistos(); // Guardar historial en archivo después de agregar una visualización
+    }
+
+
+    public void guardarenarchivohistorialvistos() {
+
+        File file = new File("historialvistos.json");
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            objectMapper.writeValue(file,historialvistos);
+            System.out.println("Archivo guardado correctamente.");
+
+        } catch (IOException e) {
+            System.out.println("No se pudo guardar el archivo" + e.getMessage());
+        }
+    }
+
+
+
 
 
     public void leerenarchivo() {
@@ -139,6 +181,20 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         }
 
     }
+
+    public void leerHistorialVistosDesdeArchivo() {
+        File file = new File("historialvistos.json");
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            historialvistos = objectMapper.readValue(file, new TypeReference<ArrayList<String>>() {});
+            System.out.println("Historial de visualizaciones cargado correctamente desde el archivo.");
+        } catch (IOException e) {
+            System.out.println("No se pudo cargar el historial de visualizaciones desde el archivo: " + e.getMessage());
+        }
+    }
+
+
+
 
     public void mostrarUsuarios() {
         System.out.println("Usuarios registrados:");
@@ -206,7 +262,6 @@ public class ServicioStreaming implements ABM<AudioVisual> {
             }
         }
     }
-
 
     @Override
     public boolean agregar(AudioVisual nuevoElemento) {
@@ -277,9 +332,6 @@ public void eliminarUsuario(Usuarios usuario)
     usuariosHashSet.remove(usuario);
     guardarenarchivo();
 }
-
-
-
 
     public void eliminar(AudioVisual elemento) {
         if (elemento instanceof Pelicula) {
@@ -456,10 +508,6 @@ public void eliminarUsuario(Usuarios usuario)
 
         //volver menuusuario.
     }
-
-
-
-
 
 
     public String buscarepisodio(int numerocap,Serie serie)

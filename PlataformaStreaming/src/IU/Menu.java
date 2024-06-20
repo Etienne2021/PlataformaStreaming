@@ -32,10 +32,10 @@ public class Menu {
             switch (opcion) {
                 case 1:
                     iniciarSesion();
-                    menuUsuario();
                     break;
                 case 2:
-                    registrarse();
+                        registrarse();
+
                     break;
                 case 3:
                     iniciarSesioncomoAdmin();
@@ -47,10 +47,232 @@ public class Menu {
                     System.out.println("Numero ingresado incorrecto.");
 
             }
-        }while (opcion!=0);
+        } while (opcion != 0);
     }
 
-    public void iniciarSesion() {
+    public void menuAdmin() {
+        int opcion;
+        boolean salir = false;
+
+        while (!salir) {
+            System.out.println("\n-- Menú de Administrador --");
+            System.out.println("Seleccione una opción:");
+            System.out.println("1. Cargar Película");
+            System.out.println("2. Cargar Serie");
+            System.out.println("3. Eliminar Pelicula o Serie");
+            System.out.println("4. Modificar Estado");
+            System.out.println("5. Eliminar Usuario");
+            System.out.println("6. ver todas las peliculas y series");
+            System.out.println("7. ver todos los usuarios registrados");
+            System.out.println("8. Mostrar historial inicio de sesion de un usuario");
+            System.out.println("9. Salir");
+
+            opcion = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcion) {
+                case 1:
+                    servicioStreaming.mostrarpelicula();
+                    cargarPelicula();
+                    break;
+                case 2:
+                    servicioStreaming.mostrarseries();
+                    cargarserie();
+                    break;
+                case 3:
+                    servicioStreaming.mostrarpelicula();
+                    servicioStreaming.mostrarseries();
+                    eliminar();
+                    break;
+                case 4:
+                    servicioStreaming.mostrarpelicula();
+                    servicioStreaming.mostrarseries();
+                    modificar();
+                    break;
+                case 5:
+                    servicioStreaming.mostrarUsuarios();
+                    eliminarUsuario();
+                case 6:
+                    servicioStreaming.mostrarpelicula();
+                    servicioStreaming.mostrarseries();
+                case 7:
+                    servicioStreaming.mostrarUsuarios();
+
+                    break;
+                case 8:
+                    mostrarHistorialSiExiste();
+                    break;
+
+                case 9:
+                    salir = true;
+                    System.out.println("Sesión de administrador finalizada.");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Por favor, seleccione una opción válida.");
+                    break;
+            }
+        }
+    }
+
+    public void menuUsuario(Usuarios actual) throws InvalidRatingException {
+        Scanner scanner = new Scanner(System.in);
+        boolean salir = false;
+
+        while (!salir) {
+            try {
+                System.out.println("Ingrese: \n 1- Quiero ver una Pelicula \n 2- Quiero ver una Serie \n 3-Ver mis peliculas y series vistas \n4- Salir \n");
+                int opcion = scanner.nextInt();
+                scanner.nextLine(); // Consumir el salto de línea pendiente
+
+                switch (opcion) {
+                    case 1:
+                        servicioStreaming.mostrarpeliculaparausuario();
+                        System.out.println("\n\n");
+                        System.out.println("Ingrese el nombre de la pelicula que desea ver: ");
+                        String tituloPelicula = scanner.nextLine();
+                        AudioVisual retornoPelicula = servicioStreaming.buscarPorTitulo(tituloPelicula);
+                        if (retornoPelicula instanceof Pelicula) {
+                            servicioStreaming.reproducirpelicula((Pelicula) retornoPelicula);
+                            servicioStreaming.agregarVisualizacion(actual.getNombre(),tituloPelicula);
+                            System.out.println("\n\n");
+                            int calificacionPelicula;
+                            do {
+                                System.out.println("Ingrese su calificacion a la pelicula del 1 al 5: ");
+                                calificacionPelicula = scanner.nextInt();
+                                try {
+                                    servicioStreaming.calificacion(calificacionPelicula, retornoPelicula);
+                                    System.out.println("¡Calificación registrada con éxito!");
+                                } catch (InvalidRatingException e) {
+                                    System.out.println("Error" + e.getMessage());
+                                    System.out.println("Por favor, ingrese una calificación válida del 1 al 5.");
+                                }
+                            } while (calificacionPelicula < 1 || calificacionPelicula > 5);
+                        } else {
+                            System.out.println("\n\n");
+                            System.out.println("Titulo incorrecto. \n");
+                        }
+                        break;
+                    case 2:
+                        servicioStreaming.mostrarseriesparausuarios();
+                        System.out.println("\n\n");
+                        System.out.println("Ingrese el nombre de la serie que desea ver: ");
+                        String tituloSerie = scanner.nextLine();
+                        AudioVisual retornoSerie = servicioStreaming.buscarPorTitulo(tituloSerie);
+                        if (retornoSerie instanceof Serie) {
+                            servicioStreaming.reproducirserie((Serie) retornoSerie);
+                            servicioStreaming.agregarVisualizacion(actual.getNombre(),tituloSerie);
+                            System.out.println("\n\n");
+                            int calificacionSerie;
+
+                            do {
+                                System.out.println("Ingrese su calificacion al episodio del 1 al 5: ");
+                                calificacionSerie = scanner.nextInt();
+                                try {
+                                    servicioStreaming.calificacion(calificacionSerie, retornoSerie);
+                                    System.out.println("¡Calificación registrada con éxito!");
+                                } catch (InvalidRatingException e) {
+                                    System.out.println("Error" + e.getMessage());
+                                    System.out.println("Por favor, ingrese una calificación válida del 1 al 5.");
+                                }
+                            } while (calificacionSerie < 1 || calificacionSerie > 5);
+
+
+                            int opcion1;
+                            do {
+                                System.out.println(" 1-Volver al menu.  2-Reproducir otro capitulo");
+                                opcion1 = scanner.nextInt();
+
+                                if (opcion1 == 2) {
+                                    servicioStreaming.reproducirserie((Serie) retornoSerie);
+                                }
+                            } while (opcion1 != 1 && opcion1 != 2);
+                        } else {
+                            System.out.println("\n\n");
+                            System.out.println("Titulo incorrecto. \n");
+                        }
+                        break;
+                    case 3:
+                        servicioStreaming.mostrarHistorialVistosPorUsuario(actual.getNombre());
+                        break;
+
+                    case 4:
+                        menuprincipal();
+                        salir = true;
+                        break;
+                    default:
+                        System.out.println("Numero ingresado incorrecto.");
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Error: Ingrese un número válido.");
+                scanner.nextLine(); // Limpiar el búfer del scanner
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+    public void registrarse() throws InvalidRatingException {
+
+
+        String nombre;
+        String contraseña;
+        String contraseñaConfirmar;
+
+
+        do {
+
+            System.out.println("Ingrese su Nombre:");
+            nombre = scanner.nextLine();
+
+            System.out.println("Ingrese su nueva contraseña (al menos 8 caracteres):");
+            contraseña = scanner.nextLine();
+
+            System.out.println("Ingrese de nuevo su nueva contraseña:");
+            contraseñaConfirmar = scanner.nextLine();
+
+
+            try {
+                servicioStreaming.validarcontraseña(contraseña, contraseñaConfirmar);
+            } catch (ContraseñaNoCoincidenException e) {
+                System.out.println("Error: " + e.getMessage());
+                continue; // Continuar al siguiente ciclo del bucle
+            }
+
+            try {
+                servicioStreaming.verificarsiexisteusuario(nombre);
+            } catch (UsuarioYaexisteException e) {
+                System.out.println("Error: " + e.getMessage());
+                continue; // Continuar al siguiente ciclo del bucle
+            }
+
+            // Salir del bucle si las validaciones fueron exitosas
+            break;
+
+        } while (true);
+
+        // Si se llega aquí, se han cumplido todas las validaciones
+        Usuarios usuario1 = new Usuarios(nombre, contraseña);
+
+        System.out.println("Creando perfil...");
+        System.out.println("Ingrese el nombre del nuevo perfil:");
+        String nombrePerfil = scanner.nextLine();
+
+        Perfil perfil1 = new Perfil(nombrePerfil);
+        usuario1.agregarPerfil(perfil1);
+
+        servicioStreaming.AgregarUsuario(usuario1);
+        servicioStreaming.mostrarUsuarios();
+
+        menuprincipal();
+    }
+
+   public void iniciarSesion() throws InvalidRatingException {
 
         String nombre;
         do {
@@ -122,6 +344,7 @@ public class Menu {
                 }while (opcionperfil!=1);
 
                 servicioStreaming.agregarHistorialInicioSesion(nombre);
+                menuUsuario(usuarioactual);
             } catch (UsuarioNoEncontradoException e) {
                 System.out.println("\nError al iniciar sesión: " + e.getMessage());
                 continue;
@@ -137,12 +360,12 @@ public class Menu {
 
 
 
+
     public void cerrarSesion() {
 
         System.out.println("\nSesion cerrada");
 
     }
-
     public void iniciarSesioncomoAdmin() {
 
         String nombre;
@@ -170,69 +393,7 @@ public class Menu {
 
     }
 
-    public void menuAdmin() {
-        int opcion;
-        boolean salir = false;
 
-        while (!salir) {
-            System.out.println("\n-- Menú de Administrador --");
-            System.out.println("Seleccione una opción:");
-            System.out.println("1. Cargar Película");
-            System.out.println("2. Cargar Serie");
-            System.out.println("3. Eliminar Pelicula o Serie");
-            System.out.println("4. Modificar Estado");
-            System.out.println("5. Eliminar Usuario");
-            System.out.println("6. ver todas las peliculas y series");
-            System.out.println("7. ver todos los usuarios registrados");
-            System.out.println("8. Mostrar historial inicio de sesion de un usuario");
-            System.out.println("8. Salir");
-
-            opcion = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (opcion) {
-                case 1:
-                    servicioStreaming.mostrarpelicula();
-                    cargarPelicula();
-                    break;
-                case 2:
-                    servicioStreaming.mostrarseries();
-                    cargarserie();
-                    break;
-                case 3:
-                    servicioStreaming.mostrarpelicula();
-                    servicioStreaming.mostrarseries();
-                    eliminar();
-                    break;
-                case 4:
-                    servicioStreaming.mostrarpelicula();
-                    servicioStreaming.mostrarseries();
-                    modificar();
-                    break;
-                case 5:
-                    servicioStreaming.mostrarUsuarios();
-                    eliminarUsuario();
-                case 6:
-                    servicioStreaming.mostrarpelicula();
-                    servicioStreaming.mostrarseries();
-                case 7:
-                    servicioStreaming.mostrarUsuarios();
-
-                      break;
-                case 8:
-                    mostrarHistorialSiExiste();
-                    break;
-
-                case 9:
-                    salir = true;
-                    System.out.println("Sesión de administrador finalizada.");
-                    break;
-                default:
-                    System.out.println("Opción inválida. Por favor, seleccione una opción válida.");
-                    break;
-            }
-        }
-    }
 
     public void mostrarHistorialSiExiste() {
 
@@ -248,63 +409,6 @@ public class Menu {
             }
         } while (!usuarioEncontrado);
         }
-
-
-    public void registrarse() throws InvalidRatingException {
-
-
-        String nombre;
-        String contraseña;
-        String contraseñaConfirmar;
-
-
-        do {
-
-            System.out.println("Ingrese su Nombre:");
-            nombre = scanner.nextLine();
-
-            System.out.println("Ingrese su nueva contraseña (al menos 8 caracteres):");
-            contraseña = scanner.nextLine();
-
-            System.out.println("Ingrese de nuevo su nueva contraseña:");
-            contraseñaConfirmar = scanner.nextLine();
-
-
-            try {
-                servicioStreaming.validarcontraseña(contraseña, contraseñaConfirmar);
-            } catch (ContraseñaNoCoincidenException e) {
-                System.out.println("Error: " + e.getMessage());
-                continue; // Continuar al siguiente ciclo del bucle
-            }
-
-            try {
-                servicioStreaming.verificarsiexisteusuario(nombre);
-            } catch (UsuarioYaexisteException e) {
-                System.out.println("Error: " + e.getMessage());
-                continue; // Continuar al siguiente ciclo del bucle
-            }
-
-            // Salir del bucle si las validaciones fueron exitosas
-            break;
-
-        } while (true);
-
-        // Si se llega aquí, se han cumplido todas las validaciones
-        Usuarios usuario1 = new Usuarios(nombre, contraseña);
-
-        System.out.println("Creando perfil...");
-        System.out.println("Ingrese el nombre del nuevo perfil:");
-        String nombrePerfil = scanner.nextLine();
-
-        Perfil perfil1 = new Perfil(nombrePerfil);
-        usuario1.agregarPerfil(perfil1);
-
-        servicioStreaming.AgregarUsuario(usuario1);
-        servicioStreaming.mostrarUsuarios();
-
-        menuprincipal();
-    }
-
     public void cargarPelicula() {
         Scanner scanner = new Scanner(System.in);
 
@@ -330,7 +434,6 @@ public class Menu {
 
         scanner.nextLine(); // Limpiar el buffer del scanner
     }
-
     public void cargarserie() {
 
         Scanner scanner = new Scanner(System.in);
@@ -379,8 +482,6 @@ public class Menu {
 
         scanner.nextLine();
     }
-
-
     public void eliminar() {
         System.out.println("Ingrese el titulo de la pelicula");
         String titulo = scanner.nextLine();
@@ -389,8 +490,6 @@ public class Menu {
         servicioStreaming.mostrarpelicula();
 
     }
-
-
     public void eliminarUsuario() {
         boolean existe = true;
         while (existe) {
@@ -407,10 +506,6 @@ public class Menu {
             }
         }
     }
-
-
-
-
     public void modificar() {
         System.out.println("Ingrese el titulo de la pelicula");
         String titulo = scanner.nextLine();
@@ -421,94 +516,5 @@ public class Menu {
     }
 
 
-    public void menuUsuario() throws InvalidRatingException {
-        Scanner scanner = new Scanner(System.in);
-        boolean salir = false;
-
-        while (!salir) {
-            try {
-                System.out.println("Ingrese: \n 1- Quiero ver una Pelicula \n 2- Quiero ver una Serie \n 3- Salir \n \n");
-                int opcion = scanner.nextInt();
-                scanner.nextLine(); // Consumir el salto de línea pendiente
-
-                switch (opcion) {
-                    case 1:
-                        servicioStreaming.mostrarpeliculaparausuario();
-                        System.out.println("\n\n");
-                        System.out.println("Ingrese el nombre de la pelicula que desea ver: ");
-                        String tituloPelicula = scanner.nextLine();
-                        AudioVisual retornoPelicula = servicioStreaming.buscarPorTitulo(tituloPelicula);
-                        if (retornoPelicula instanceof Pelicula) {
-                            servicioStreaming.reproducirpelicula((Pelicula) retornoPelicula);
-                            System.out.println("\n\n");
-                            int calificacionPelicula;
-                            do {
-                                System.out.println("Ingrese su calificacion a la pelicula del 1 al 5: ");
-                                calificacionPelicula = scanner.nextInt();
-                                try {
-                                    servicioStreaming.calificacion(calificacionPelicula, retornoPelicula);
-                                    System.out.println("¡Calificación registrada con éxito!");
-                                } catch (InvalidRatingException e) {
-                                    System.out.println("Error" + e.getMessage());
-                                    System.out.println("Por favor, ingrese una calificación válida del 1 al 5.");
-                                }
-                            }while (calificacionPelicula < 1 || calificacionPelicula > 5);
-                        } else {
-                            System.out.println("\n\n");
-                            System.out.println("Titulo incorrecto. \n");
-                        }
-                        break;
-                    case 2:
-                        servicioStreaming.mostrarseriesparausuarios();
-                        System.out.println("\n\n");
-                        System.out.println("Ingrese el nombre de la serie que desea ver: ");
-                        String tituloSerie = scanner.nextLine();
-                        AudioVisual retornoSerie = servicioStreaming.buscarPorTitulo(tituloSerie);
-                        if (retornoSerie instanceof Serie) {
-                            servicioStreaming.reproducirserie((Serie) retornoSerie);
-                            System.out.println("\n\n");
-                            int calificacionSerie;
-
-                            do {
-                                System.out.println("Ingrese su calificacion al episodio del 1 al 5: ");
-                                 calificacionSerie = scanner.nextInt();
-                                try {
-                                    servicioStreaming.calificacion(calificacionSerie, retornoSerie);
-                                    System.out.println("¡Calificación registrada con éxito!");
-                                } catch (InvalidRatingException e) {
-                                    System.out.println("Error" + e.getMessage());
-                                    System.out.println("Por favor, ingrese una calificación válida del 1 al 5.");
-                                }
-                            }while (calificacionSerie < 1 || calificacionSerie > 5);
-
-
-                            int opcion1;
-                            do {
-                                System.out.println(" 1-Volver al menu.  2-Reproducir otro capitulo");
-                                opcion1 = scanner.nextInt();
-
-                                if (opcion1 == 2) {
-                                    servicioStreaming.reproducirserie((Serie) retornoSerie);
-                                }
-                            } while (opcion1 != 1 && opcion1 != 2);
-                        } else {
-                            System.out.println("\n\n");
-                            System.out.println("Titulo incorrecto. \n");
-                        }
-                        break;
-                    case 3:
-                        menuprincipal();
-                        salir = true;
-                        break;
-                    default:
-                        System.out.println("Numero ingresado incorrecto.");
-                        break;
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Error: Ingrese un número válido.");
-                scanner.nextLine(); // Limpiar el búfer del scanner
-            }
-        }
-    }
 
 }
