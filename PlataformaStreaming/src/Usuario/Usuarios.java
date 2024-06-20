@@ -18,11 +18,15 @@ public class Usuarios {
     private ArrayList<Perfil>perfiles;
 
 
+    public Usuarios() {
+
+    }
+
     // Constructor básico para inicializar perfiles vacíos
     public Usuarios(String nombre, String contraseña) {
         this.Nombre = nombre;
         this.contraseña = contraseña;
-        this.Estado = false; // Inicializado en falso por defecto
+        this.Estado = false;
         this.perfiles = new ArrayList<>();
     }
 
@@ -99,7 +103,6 @@ public class Usuarios {
         return "Usuarios{" +
                 "Nombre='" + Nombre + '\'' +
                 ", contraseña='" + contraseña + '\'' +
-                ", Estado=" + Estado +
                 ", perfiles=" + perfiles +
                 '}';
     }

@@ -61,11 +61,11 @@ public class ServicioStreaming implements ABM<AudioVisual> {
     }
 
 
-    public void verificarsiexiste(String nombre, String Contraseña) throws UsuarioNoEncontradoException {
+    public Usuarios verificarsiexiste(String nombre, String Contraseña) throws UsuarioNoEncontradoException {
 
         for (Usuarios u : usuariosHashSet) {
             if (u.getNombre().equals(nombre) && u.getContraseña().equals(Contraseña)) {
-                return;
+                return u;
             }
         }
         throw new UsuarioNoEncontradoException("Nombre de usuario o contraseña incorrecta");
@@ -80,6 +80,23 @@ public class ServicioStreaming implements ABM<AudioVisual> {
             }
         }
     }
+
+    public boolean verificarexisteperfil(String nombreperfil,Usuarios usuarios)
+    {
+        ArrayList<Perfil>perfiles=new ArrayList<>();
+        perfiles=usuarios.getPerfiles();
+
+        for (Perfil perfil: perfiles)
+        {
+            if(perfil.getNombre().equals(nombreperfil))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
 
     public void guardarenarchivo() {
@@ -217,12 +234,21 @@ public class ServicioStreaming implements ABM<AudioVisual> {
     public AudioVisual buscarPorTitulo(String titulo) {
         for (Pelicula pelicula : peliculas) {
             if (pelicula.getTitulo().equalsIgnoreCase(titulo)) {
-                return pelicula;
+                if(pelicula.isEstado())
+                {
+                    return pelicula;
+                }
+
             }
+
         }
         for (Serie serie : series) {
             if (serie.getTitulo().equalsIgnoreCase(titulo)) {
-                return serie;
+                if(serie.isEstado())
+                {
+                    return serie;
+                }
+
             }
         }
         return null;
@@ -270,6 +296,18 @@ public class ServicioStreaming implements ABM<AudioVisual> {
     }
 
 
+    public void mostrarpeliculaparausuario() {
+        System.out.println("Peliculas cargadas \n\n:");
+        if (peliculas.isEmpty()) {
+            System.out.println("No hay peliculas");
+        } else {
+            for (Pelicula pelicula : peliculas) {
+                if(pelicula.isEstado())
+                { System.out.println("Pelicula cargada: " + pelicula);}
+            }
+        }
+    }
+
 
     public void mostrarpelicula() {
         System.out.println("Peliculas cargadas \n\n:");
@@ -281,6 +319,22 @@ public class ServicioStreaming implements ABM<AudioVisual> {
             }
         }
     }
+
+    public void mostrarseriesparausuarios()
+    {
+        System.out.println("Series cargadas \n\n:");
+        if (series.isEmpty()) {
+            System.out.println("No hay series");
+        } else {
+            for (Serie serie : series) {
+                if(serie.isEstado())
+                {System.out.println("series cargada: " + serie);}
+            }
+        }
+    }
+
+
+
 
     public void mostrarseries()
     {
@@ -340,7 +394,7 @@ public class ServicioStreaming implements ABM<AudioVisual> {
 
 
     public void reproducirserie(Serie serie) {
-        Menu menu=new Menu();
+
         Scanner scanner = new Scanner(System.in);
         System.out.println("\nUsted esta por reproducir la serie: " + serie.getTitulo());
         System.out.println("\n\n");
@@ -367,9 +421,10 @@ public class ServicioStreaming implements ABM<AudioVisual> {
                 System.out.println("\nEl episodio se esta reproduciendo... \n\n");
                 System.out.println("\nIngrese 1 para poner pausa o 0 para salir.");
                 opcion = scanner.nextInt();
-            } else {
+            } else if(opcion!=0) {
                 System.out.println("\nCaracter invalido.");
                 System.out.println("\nIngrese otro caracter.");
+                opcion=scanner.nextInt();
             }
 
         } while (opcion != 0);
@@ -437,11 +492,11 @@ public class ServicioStreaming implements ABM<AudioVisual> {
 
             if(elemento instanceof Serie)
             {
-                System.out.println("Usted califico el episodio con"+calificacion+"estrella");
+                System.out.println("Usted califico el episodio con "+calificacion+" estrella");
             }
-            else
+            if(elemento instanceof  Pelicula)
             {
-                System.out.println("Usted califico la pelicula con"+calificacion+"estrella");
+                System.out.println("Usted califico la pelicula con "+calificacion+" estrella");
             }
 
         }
@@ -449,9 +504,17 @@ public class ServicioStreaming implements ABM<AudioVisual> {
 
 
 
+    public void mostrarperfiles(String nombre)
+    {
+        for(Usuarios usuario:usuariosHashSet)
+        {
+            if(usuario.getNombre().equals(nombre))
+            {
+                System.out.println(usuario.getPerfiles());
+            }
+        }
 
-
-
+    }
 
     @Override
     public boolean equals(Object o) {

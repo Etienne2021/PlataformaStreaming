@@ -9,7 +9,7 @@ import Excepciones.*;
 import Usuario.Administrador;
 import Usuario.Perfil;
 import Usuario.Usuarios;
-import Excepciones.*;
+
 
 
 import java.util.*;
@@ -25,25 +25,29 @@ public class Menu {
         int opcion;
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Ingrese: \n 1- Iniciar Sesion \n 2- Crear Usuario \n 3- Iniciar Admin \n \n");
-        opcion = scanner.nextInt();
+        do {
+            System.out.println("Ingrese: \n 1- Iniciar Sesion \n 2- Crear Usuario \n 3- Iniciar Admin \n 0-Cerrar aplicacion\n \n");
+            opcion = scanner.nextInt();
 
-        switch (opcion) {
-            case 1:
-                iniciarSesion();
-                menuUsuario();
-                break;
-            case 2:
-                registrarse();
-                break;
-            case 3:
-                iniciarSesioncomoAdmin();
-                break;
-            default:
-                System.out.println("Numero ingresado incorrecto.");
-                break;
-        }
+            switch (opcion) {
+                case 1:
+                    iniciarSesion();
+                    menuUsuario();
+                    break;
+                case 2:
+                    registrarse();
+                    break;
+                case 3:
+                    iniciarSesioncomoAdmin();
+                    break;
+                case 0:
+                    System.out.println("Cerrando aplicacion\n Hasta la proximaaaa");
+                    break;
+                default:
+                    System.out.println("Numero ingresado incorrecto.");
 
+            }
+        }while (opcion!=0);
     }
 
     public void iniciarSesion() {
@@ -55,8 +59,43 @@ public class Menu {
             System.out.println("\nIngrese su  contraseña");
             String contraseña = scanner.nextLine();
             try {
-                servicioStreaming.verificarsiexiste(nombre, contraseña);
+                Usuarios usuarioactual=new Usuarios();
+                usuarioactual=servicioStreaming.verificarsiexiste(nombre, contraseña);
                 System.out.println("\nInicio de sesion exitoso");
+                servicioStreaming.mostrarperfiles(nombre);
+                int opcionperfil;
+
+                do {
+                    System.out.println("1-seleccionar  perfil");
+                    System.out.println("2-crear nuevo perfil");
+                    opcionperfil=scanner.nextInt();
+                    scanner.nextLine();
+                    boolean existe;
+
+                    if(opcionperfil==1)
+                    {
+                        do{
+                            System.out.println("Ingrese el nombre del perfil al que quiere ingresar");
+                            nombre=scanner.nextLine();
+                            existe=servicioStreaming.verificarexisteperfil(nombre,usuarioactual);
+                        }while (!existe);
+
+                    }
+                    else if(opcionperfil==2)
+                    {
+                        System.out.println("Ingrese el nombre del nuevo perfil");
+                        nombre=scanner.nextLine();
+                        Perfil perfilnuevo= new Perfil(nombre);
+                        usuarioactual.agregarPerfil(perfilnuevo);
+                        servicioStreaming.guardarenarchivo();
+                    }
+                    else {
+                        System.out.println("Opcion incorrecta");
+                    }
+                }while (opcionperfil!=1);
+
+
+
 
                 servicioStreaming.agregarHistorialInicioSesion(nombre);
             } catch (UsuarioNoEncontradoException e) {
@@ -320,7 +359,7 @@ public class Menu {
 
                 switch (opcion) {
                     case 1:
-                        servicioStreaming.mostrarpelicula();
+                        servicioStreaming.mostrarpeliculaparausuario();
                         System.out.println("\n\n");
                         System.out.println("Ingrese el nombre de la pelicula que desea ver: ");
                         String tituloPelicula = scanner.nextLine();
@@ -330,7 +369,7 @@ public class Menu {
                             System.out.println("\n\n");
                             int calificacionPelicula;
                             do {
-                                System.out.println("Ingrese su calificacion al episodio del 1 al 5: ");
+                                System.out.println("Ingrese su calificacion a la pelicula del 1 al 5: ");
                                 calificacionPelicula = scanner.nextInt();
                                 try {
                                     servicioStreaming.calificacion(calificacionPelicula, retornoPelicula);
@@ -346,7 +385,7 @@ public class Menu {
                         }
                         break;
                     case 2:
-                        servicioStreaming.mostrarseries();
+                        servicioStreaming.mostrarseriesparausuarios();
                         System.out.println("\n\n");
                         System.out.println("Ingrese el nombre de la serie que desea ver: ");
                         String tituloSerie = scanner.nextLine();

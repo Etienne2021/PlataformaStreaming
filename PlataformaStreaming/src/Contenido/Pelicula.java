@@ -24,21 +24,6 @@ public class Pelicula extends AudioVisual{
     }
 
 
-    public void calificacion(int calificacion) throws InvalidRatingException
-    {
-        if(calificacion<1 && calificacion>5)
-        {
-           throw new InvalidRatingException("Calificacion invalida,debe ser entre 1 y 5");
-
-        }else
-        {
-            this.calificacion=calificacion;
-            System.out.println("Has calificado la pelicula"+titulo+"con"+calificacion+"estrellas");
-        }
-    }
-
-
-
 
 
     public double getDuracion() {
