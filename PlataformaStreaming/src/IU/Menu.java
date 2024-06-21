@@ -26,22 +26,20 @@ public class Menu {
         Scanner scanner = new Scanner(System.in);
 
         do {
-            System.out.println("Ingrese: \n 1- Iniciar Sesion \n 2- Crear Usuario \n 3- Iniciar Admin \n 0-Cerrar aplicacion\n \n");
+            System.out.println("\n Ingrese: \n 1- Iniciar Sesion \n 2- Crear Usuario \n 3- Iniciar Admin \n 0-Cerrar aplicacion\n \n");
             opcion = scanner.nextInt();
-
             switch (opcion) {
                 case 1:
                     iniciarSesion();
                     break;
                 case 2:
-                        registrarse();
-
+                    registrarse();
                     break;
                 case 3:
                     iniciarSesioncomoAdmin();
                     break;
                 case 0:
-                    System.out.println("Cerrando aplicacion\n Hasta la proximaaaa");
+                    System.out.println("Cerrando aplicacion\n");
                     break;
                 default:
                     System.out.println("Numero ingresado incorrecto.");
@@ -92,17 +90,17 @@ public class Menu {
                 case 5:
                     servicioStreaming.mostrarUsuarios();
                     eliminarUsuario();
+                    break;
                 case 6:
                     servicioStreaming.mostrarpelicula();
                     servicioStreaming.mostrarseries();
+                    break;
                 case 7:
                     servicioStreaming.mostrarUsuarios();
-
                     break;
                 case 8:
                     mostrarHistorialSiExiste();
                     break;
-
                 case 9:
                     salir = true;
                     System.out.println("Sesión de administrador finalizada.");
@@ -267,14 +265,14 @@ public class Menu {
         usuario1.agregarPerfil(perfil1);
 
         servicioStreaming.AgregarUsuario(usuario1);
-        servicioStreaming.mostrarUsuarios();
 
         menuprincipal();
     }
 
-   public void iniciarSesion() throws InvalidRatingException {
+    public void iniciarSesion() throws InvalidRatingException {
 
         String nombre;
+        int opcionperfil;
         do {
             System.out.println("\nIngrese su Nombre");
             nombre = scanner.nextLine();
@@ -283,10 +281,19 @@ public class Menu {
             try {
                 Usuarios usuarioactual=new Usuarios();
                 usuarioactual=servicioStreaming.verificarsiexiste(nombre, contraseña);
+                ArrayList<Perfil> perfiles = usuarioactual.getPerfiles();
                 System.out.println("\nInicio de sesion exitoso");
-                servicioStreaming.mostrarperfiles(nombre);
-                int opcionperfil;
-
+                if(!perfiles.isEmpty()) {
+                    servicioStreaming.mostrarperfiles(nombre);
+                }
+                if (perfiles.isEmpty()) {
+                    System.out.println("No hay perfiles cargador para este usuario.");
+                    System.out.println("Ingrese el nombre del nuevo perfil");
+                    nombre=scanner.nextLine();
+                    Perfil perfilnuevo= new Perfil(nombre);
+                    usuarioactual.agregarPerfil(perfilnuevo);
+                    servicioStreaming.guardarenarchivo();
+                }
                 do {
                     System.out.println("1-seleccionar  perfil");
                     System.out.println("2-crear nuevo perfil");
@@ -302,6 +309,9 @@ public class Menu {
                             System.out.println("Ingrese el nombre del perfil al que quiere ingresar");
                             nombre=scanner.nextLine();
                             existe=servicioStreaming.verificarexisteperfil(nombre,usuarioactual);
+                            if(!existe){
+                                System.out.println("Perfil ingresado no existe.\n");
+                            }
                         }while (!existe);
 
                     }
@@ -314,10 +324,9 @@ public class Menu {
                         servicioStreaming.guardarenarchivo();
                     }else if(opcionperfil==3)
                     {
-                        ArrayList<Perfil> perfiles = usuarioactual.getPerfiles();
                         if (perfiles.isEmpty()) {
                             System.out.println("No hay perfiles cargados para el usuario actual.");
-                            return; // Salir si no hay perfiles cargados
+                            menuprincipal(); // Salir si no hay perfiles cargados
                         }
                         do {
                             System.out.println("Ingrese el nombre del perfil que quiere eliminar");
@@ -328,6 +337,11 @@ public class Menu {
                                 usuarioactual.eliminarPerfil(nombre);
                                 System.out.println("Perfil eliminado correctamente");
                                 servicioStreaming.guardarenarchivo();
+                                if (perfiles.isEmpty()) {
+                                    System.out.println("Ya no existen perfiles para este usuario \n");
+                                    System.out.println("Para iniciar en este usuario debe crear un perfil nuevo. \n");
+                                    menuprincipal(); // Salir si no hay perfiles cargados
+                                }
                             }
                             else
                             {
@@ -347,6 +361,7 @@ public class Menu {
                 menuUsuario(usuarioactual);
             } catch (UsuarioNoEncontradoException e) {
                 System.out.println("\nError al iniciar sesión: " + e.getMessage());
+                menuprincipal();
                 continue;
             }
             break;
@@ -408,7 +423,7 @@ public class Menu {
                 System.out.println("Usuario no encontrado. Por favor, intente de nuevo.");
             }
         } while (!usuarioEncontrado);
-        }
+    }
     public void cargarPelicula() {
         Scanner scanner = new Scanner(System.in);
 

@@ -3,6 +3,7 @@ import Contenido.AudioVisual;
 import Contenido.Episodio;
 import Contenido.Pelicula;
 import Contenido.Serie;
+import IU.Menu;
 import Interfaces.ABM;
 import Usuario.Usuarios;
 import java.io.File;
@@ -119,7 +120,6 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             objectMapper.writeValue(file, usuariosHashSet);
-            System.out.println("Archivo guardado correctamente.");
 
         } catch (IOException e) {
             System.out.println("No se pudo guardar el archivo" + e.getMessage());
@@ -146,7 +146,7 @@ public class ServicioStreaming implements ABM<AudioVisual> {
     public void agregarVisualizacion(String nombreUsuario, String tituloVisualizado) {
         String visualizacion = nombreUsuario + " vio " + tituloVisualizado;
         historialvistos.add(visualizacion);
-        guardarenarchivohistorialvistos(); // Guardar historial en archivo después de agregar una visualización
+        guardarenarchivohistorialvistos();
     }
 
 
@@ -156,7 +156,6 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             objectMapper.writeValue(file,historialvistos);
-            System.out.println("Archivo guardado correctamente.");
 
         } catch (IOException e) {
             System.out.println("No se pudo guardar el archivo" + e.getMessage());
@@ -174,7 +173,6 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         try {
             usuariosHashSet = objectMapper.readValue(file, new TypeReference<HashSet<Usuarios>>() {
             });
-            System.out.println("Archivo leído correctamente.");
 
         } catch (IOException e) {
             System.out.println("No se pudo leer el archivo" + e.getMessage());
@@ -187,7 +185,6 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             historialvistos = objectMapper.readValue(file, new TypeReference<ArrayList<String>>() {});
-            System.out.println("Historial de visualizaciones cargado correctamente desde el archivo.");
         } catch (IOException e) {
             System.out.println("No se pudo cargar el historial de visualizaciones desde el archivo: " + e.getMessage());
         }
@@ -197,7 +194,7 @@ public class ServicioStreaming implements ABM<AudioVisual> {
 
 
     public void mostrarUsuarios() {
-        System.out.println("Usuarios registrados:");
+        System.out.println("Usuarios registrados: \n");
         if (usuariosHashSet.isEmpty()) {
             System.out.println("No hay usuarios registrados.");
         } else {
@@ -213,7 +210,6 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             objectMapper.writeValue(file, historialInicioSesion);
-            System.out.println("Archivo de historial de inicio de sesión guardado correctamente.");
         } catch (IOException e) {
             System.out.println("No se pudo guardar el archivo de historial de inicio de sesión: " + e.getMessage());
         }
@@ -225,7 +221,6 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         try {
             historialInicioSesion = objectMapper.readValue(file, new TypeReference<TreeMap<String, List<String>>>() {
             });
-            System.out.println("Archivo de historial de inicio de sesión leído correctamente.");
         } catch (IOException e) {
             System.out.println("No se pudo leer el archivo de historial de inicio de sesión: " + e.getMessage());
         }
@@ -327,11 +322,11 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         return null;
     }
 
-public void eliminarUsuario(Usuarios usuario)
-{
-    usuariosHashSet.remove(usuario);
-    guardarenarchivo();
-}
+    public void eliminarUsuario(Usuarios usuario)
+    {
+        usuariosHashSet.remove(usuario);
+        guardarenarchivo();
+    }
 
     public void eliminar(AudioVisual elemento) {
         if (elemento instanceof Pelicula) {
@@ -375,51 +370,67 @@ public void eliminarUsuario(Usuarios usuario)
 
 
     public void mostrarpeliculaparausuario() {
-        System.out.println("Peliculas cargadas \n\n:");
+        System.out.println("Peliculas: \n\n");
         if (peliculas.isEmpty()) {
             System.out.println("No hay peliculas");
         } else {
             for (Pelicula pelicula : peliculas) {
                 if(pelicula.isEstado())
-                { System.out.println("Pelicula cargada: " + pelicula);}
+                { System.out.println("Titular: " + pelicula.getTitulo()+" Genero: "+pelicula.getGenero()+" Duracion: "+pelicula.getDuracion()+" Año: "+pelicula.getAño()+"\n");
+                }
             }
         }
     }
 
 
     public void mostrarpelicula() {
-        System.out.println("Peliculas cargadas \n\n:");
         if (peliculas.isEmpty()) {
             System.out.println("No hay peliculas");
         } else {
+            System.out.println("Peliculas: "+"\n");
             for (Pelicula pelicula : peliculas) {
-                System.out.println("Pelicula cargada: " + pelicula);
+                System.out.println(" Titulo: " + pelicula.getTitulo()+" Genero: "+pelicula.getGenero()+" Duracion: "+pelicula.getDuracion()+" Año: "+pelicula.getAño()+"\n");
             }
         }
     }
 
     public void mostrarseriesparausuarios()
     {
-        System.out.println("Series cargadas \n\n:");
         if (series.isEmpty()) {
             System.out.println("No hay series");
         } else {
             for (Serie serie : series) {
                 if(serie.isEstado())
-                {System.out.println("series cargada: " + serie);}
+                {System.out.println("series: " + serie.getTitulo()+"\n");
+                    System.out.println("Episodios:");
+                    mostrarepisodios(serie.getEpisodios());
+
+
+                }
             }
         }
     }
+public void mostrarepisodios(Set<Episodio>episodios)
+{
+    for (Episodio episodio:episodios)
+    {
+        System.out.println("Titulo: "+episodio.getTitulo()+" -NumeroCapitulo:"+episodio.getNrocap()+" -Duracion:"+episodio.getDuracionEp()+"\n");
+    }
+
+}
+
 
 
     public void mostrarseries()
     {
-        System.out.println("Series cargadas \n\n:");
         if (series.isEmpty()) {
             System.out.println("No hay series");
         } else {
             for (Serie serie : series) {
-                System.out.println("series cargada: " + serie);
+                System.out.println("Serie: " + serie.getTitulo()+"\n");
+
+                System.out.println("Episodios:");
+                mostrarepisodios(serie.getEpisodios());
             }
         }
     }
@@ -429,7 +440,6 @@ public void eliminarUsuario(Usuarios usuario)
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             objectMapper.writeValue(file, peliculas);
-            System.out.println("Archivo de películas guardado correctamente.");
         } catch (IOException e) {
             System.out.println("No se pudo guardar el archivo de películas: " + e.getMessage());
         }
@@ -440,7 +450,6 @@ public void eliminarUsuario(Usuarios usuario)
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             peliculas = objectMapper.readValue(file, new TypeReference<Set<Pelicula>>() {});
-            System.out.println("Archivo de películas cargado correctamente.");
         } catch (IOException e) {
             System.out.println("No se pudo cargar el archivo de películas: " + e.getMessage());
         }
@@ -451,7 +460,6 @@ public void eliminarUsuario(Usuarios usuario)
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             objectMapper.writeValue(file, series);
-            System.out.println("Archivo de series guardado correctamente.");
         } catch (IOException e) {
             System.out.println("No se pudo guardar el archivo de series: " + e.getMessage());
         }
@@ -462,7 +470,6 @@ public void eliminarUsuario(Usuarios usuario)
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             series = objectMapper.readValue(file, new TypeReference<Set<Serie>>() {});
-            System.out.println("Archivo de series cargado correctamente.");
         } catch (IOException e) {
             System.out.println("No se pudo cargar el archivo de series: " + e.getMessage());
         }
@@ -480,7 +487,6 @@ public void eliminarUsuario(Usuarios usuario)
         do {
             System.out.println("\nIngrese el numero de episodio que desea reproducir: ");
             opcion = scanner.nextInt();
-
         }while(opcion<nummin || opcion>nummax);
 
         System.out.println("\nSe va a reproducir el  episodio ... \n\n"+buscarepisodio(opcion,serie));
@@ -505,25 +511,23 @@ public void eliminarUsuario(Usuarios usuario)
 
         } while (opcion != 0);
 
-
-        //volver menuusuario.
     }
 
 
     public String buscarepisodio(int numerocap,Serie serie)
     {
 
-     Set<Episodio>episodio=new HashSet<>();
-     episodio=serie.getEpisodios();
+        Set<Episodio>episodio=new HashSet<>();
+        episodio=serie.getEpisodios();
 
-     for(Episodio episodios: episodio)
-     {
-         if(episodios.getNrocap()==numerocap)
-         {
-             return  episodios.getTitulo();
-         }
-     }
-     return "No se encontro";
+        for(Episodio episodios: episodio)
+        {
+            if(episodios.getNrocap()==numerocap)
+            {
+                return  episodios.getTitulo();
+            }
+        }
+        return "No se encontro";
     }
 
 
@@ -582,10 +586,17 @@ public void eliminarUsuario(Usuarios usuario)
         {
             if(usuario.getNombre().equals(nombre))
             {
-                System.out.println(usuario.getPerfiles());
+                mostrarNombrePerfiles(usuario.getPerfiles());
             }
         }
+        System.out.println("\n");
+    }
 
+    public void mostrarNombrePerfiles(ArrayList<Perfil> perfiles){
+        System.out.println("Perfiles: ");
+        for(Perfil perfil:perfiles) {
+            System.out.println(perfil.getNombre());
+        }
     }
 
     @Override
