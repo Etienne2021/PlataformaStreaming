@@ -14,15 +14,14 @@ import Contenido.AudioVisual;
 public class Administrador extends Usuarios {
 
 
-   private  HashMap<String,HashSet<AudioVisual>> contenido;
+    public Administrador() {
+    }
 
-
+    public Administrador(String nombre, String contraseña) {
+        super(nombre, contraseña);
+    }
 
     public Administrador(String nombre, String contraseña, boolean estado) {
         super(nombre, contraseña, estado);
-        this.contenido = new HashMap<>();
-
     }
-
-
 }

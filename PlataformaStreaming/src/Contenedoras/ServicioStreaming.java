@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ServicioStreaming implements ABM<AudioVisual> {
 
     private HashSet<Usuarios> usuariosHashSet;
+    private HashSet<Administrador>administradores;
     private TreeMap<String, List<String>> historialInicioSesion;
     private Set<Pelicula> peliculas;
     private Set<Serie> series;
@@ -34,11 +35,13 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         this.peliculas = new HashSet<>();
         this.series = new HashSet<>();
         this.historialvistos = new ArrayList<>();
+        this.administradores=new HashSet<>();
         leerenarchivo();
         leerEnArchivoHistorial();
         cargarPeliculasDesdeArchivo();
         cargarSeriesDesdeArchivo();
         leerHistorialVistosDesdeArchivo();
+        leerenarchivoadmin();
     }
 
 
@@ -62,6 +65,96 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         }
         return "Nuevo usuario agregado";
     }
+
+
+
+    public void agregarAdministrador(Administrador administrador) {
+        if (buscarAdministrador(administrador.getNombre()) == null) {
+            if (administradores.add(administrador)) {
+                System.out.println("Administrador agregado: " + administrador);
+                guardarenarchivoadmin();
+            } else {
+                System.out.println("El administrador no pudo ser agregado.");
+            }
+        } else {
+            System.out.println("Ya existe un administrador con el nombre: " + administrador.getNombre());
+        }
+    }
+
+
+    public void eliminarAdministrador(String nombre) {
+        Administrador admin = buscarAdministrador(nombre);
+        if (admin != null) {
+            if (!admin.getNombre().equals("Admin")) {
+                administradores.remove(admin);
+                System.out.println("Administrador eliminado: " + admin);
+                guardarenarchivoadmin();
+            } else {
+                System.out.println("No se puede eliminar el administrador predeterminado 'Admin'.");
+            }
+        } else {
+            System.out.println("No se encontró el administrador con nombre: " + nombre);
+        }
+    }
+
+
+    public Administrador buscarAdministrador(String nombre) {
+        for (Administrador admin : administradores) {
+            if (admin.getNombre().equals(nombre)) {
+                return admin;
+            }
+        }
+        return null;
+    }
+
+
+    public void mostrarAdministradores() {
+        if (administradores.isEmpty()) {
+            System.out.println("No hay administradores registrados.");
+        } else {
+            System.out.println("Lista de administradores:");
+            for (Administrador admin : administradores) {
+                System.out.println(admin);
+            }
+        }
+    }
+
+
+    public void guardarenarchivoadmin() {
+
+        File file = new File("admin.json");
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            objectMapper.writeValue(file,administradores);
+
+        } catch (IOException e) {
+            System.out.println("No se pudo guardar el archivo" + e.getMessage());
+        }
+    }
+
+
+    public void leerenarchivoadmin() {
+        File file = new File("admin.json");
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            if (file.exists() && file.length() > 0) {
+                administradores = objectMapper.readValue(file, new TypeReference<HashSet<Administrador>>() {});
+            } else {
+                // Si el archivo está vacío o no existe, agregamos un administrador por defecto
+                administradores = new HashSet<>();
+                Administrador adminDefault = new Administrador("Admin", "12345678", true);
+                administradores.add(adminDefault);
+                objectMapper.writeValue(file, administradores); // Guardamos el administrador por defecto en el archivo
+            }
+        } catch (IOException e) {
+            System.out.println("No se pudo leer el archivo: " + e.getMessage());
+        }
+    }
+
+
+
+
+
 
 
     public Usuarios verificarsiexiste(String nombre, String Contraseña) throws UsuarioNoEncontradoException {
@@ -321,6 +414,8 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         }
         return null;
     }
+
+
 
     public void eliminarUsuario(Usuarios usuario)
     {
