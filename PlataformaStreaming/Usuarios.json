@@ -1,1 +1,1 @@
-[{"nombre":"Etienne","contraseña":"12345678","estado":false,"perfiles":[{"nombre":"eti"}]},{"nombre":"Matias","contraseña":"12345678","estado":true,"perfiles":[{"nombre":"mati"}]}]
+[{"nombre":"Etienne","contraseña":"12345678","estado":true,"perfiles":[{"nombre":"eti"}]},{"nombre":"Matias","contraseña":"12345678","estado":true,"perfiles":[{"nombre":"mati"}]}]

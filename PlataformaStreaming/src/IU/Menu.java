@@ -21,32 +21,43 @@ public class Menu {
     Administrador administrador = new Administrador("Admin", "12345678", true);
 
 
-    public void menuprincipal() throws InvalidRatingException {
+    public void menuprincipal() {
         int opcion;
         Scanner scanner = new Scanner(System.in);
 
         do {
-            System.out.println("\n Ingrese: \n 1- Iniciar Sesion \n 2- Crear Usuario \n 3- Iniciar Admin \n 0-Cerrar aplicacion\n \n");
+            System.out.println("\n Ingrese: \n 1- Iniciar Sesion \n 2- Crear Usuario \n 3- Iniciar Admin \n 0- Cerrar aplicacion\n \n");
             opcion = scanner.nextInt();
-            switch (opcion) {
-                case 1:
-                    iniciarSesion();
-                    break;
-                case 2:
-                    registrarse();
-                    break;
-                case 3:
-                    iniciarSesioncomoAdmin();
-                    break;
-                case 0:
-                    System.out.println("Cerrando aplicacion\n");
-                    break;
-                default:
-                    System.out.println("Numero ingresado incorrecto.");
 
+            try {
+                switch (opcion) {
+                    case 1:
+                        iniciarSesion();
+                        break;
+                    case 2:
+                        registrarse();
+                        break;
+                    case 3:
+                        iniciarSesioncomoAdmin();
+                        break;
+                    case 0:
+                        System.out.println("Cerrando aplicacion\n");
+                        break;
+                    default:
+                        System.out.println("Numero ingresado incorrecto.");
+                }
+            } catch (InvalidRatingException e) {
+                System.out.println("Error: " + e.getMessage());
+                // Aquí podrías agregar más lógica según necesites para manejar la excepción
             }
+
         } while (opcion != 0);
+
+        scanner.close(); // Cierra el scanner al finalizar
     }
+
+// Suponiendo que InvalidRatingException es una excepción que puede ocurrir en tus métodos iniciarSesion(), registrarse(), o iniciarSesioncomoAdmin()
+
 
     public void menuAdmin(Administrador admin) throws InvalidRatingException {
         int opcion;
