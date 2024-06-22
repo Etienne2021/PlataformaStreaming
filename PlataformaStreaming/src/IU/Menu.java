@@ -58,7 +58,7 @@ public class Menu {
             System.out.println("1. Cargar Película");
             System.out.println("2. Cargar Serie");
             System.out.println("3. Eliminar Pelicula o Serie");
-            System.out.println("4. Modificar Estado");
+            System.out.println("4. Modificar Estado pelicula y series");
             System.out.println("5. Eliminar Usuario");
             System.out.println("6. ver todas las peliculas y series");
             System.out.println("7. ver todos los usuarios registrados");
@@ -67,6 +67,7 @@ public class Menu {
             System.out.println("10. Eliminar Administrador");
             System.out.println("11. Mostrar Administradores");
             System.out.println("12.  Ser usuario");
+            System.out.println("13. Modificar estado usuario");
             System.out.println("13. Salir");
 
             opcion = scanner.nextInt();
@@ -117,6 +118,9 @@ public class Menu {
                 case 12:
                     gestionarPerfiles(admin);
                 case 13:
+                    servicioStreaming.mostrarUsuarios();
+                    modificarestadousuario();
+                case 14:
                     salir = true;
                     System.out.println("Sesión de administrador finalizada.");
                     break;
@@ -386,6 +390,13 @@ public class Menu {
             try {
                 Usuarios usuarioactual = new Usuarios();
                 usuarioactual = servicioStreaming.verificarsiexiste(nombre, contraseña);
+                if (usuarioactual.isEstado()==false)
+                {
+                    System.out.println("Su usuario se encuentra deshabilitado");
+                    System.out.println("Estamos habilitando su usurio.....");
+                    usuarioactual.setEstado(true);
+                    servicioStreaming.guardarenarchivo();
+                }
                 ArrayList<Perfil> perfiles = usuarioactual.getPerfiles();
                 System.out.println("\nInicio de sesion exitoso");
                 if (!perfiles.isEmpty()) {
@@ -608,6 +619,18 @@ public class Menu {
         servicioStreaming.modificarestado(elemento);
         servicioStreaming.mostrarpelicula();
     }
+  public void  modificarestadousuario()
+    {
+        System.out.println("Ingrese el nombre del usuario");
+        String nombre=scanner.nextLine();
+        Usuarios usuario=servicioStreaming.buscarUsuarioPorNombre(nombre);
+        if(usuario!=null)
+        {
+            servicioStreaming.modicarestadousuario(usuario);
+        }
+
+    }
+
 
 
     public void iniciarSesioncomoAdmin() {

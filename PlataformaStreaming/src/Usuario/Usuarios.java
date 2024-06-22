@@ -26,7 +26,7 @@ public class Usuarios {
     public Usuarios(String nombre, String contraseña) {
         this.Nombre = nombre;
         this.contraseña = contraseña;
-        this.Estado = false;
+        this.Estado = true;
         this.perfiles = new ArrayList<>();
     }
 

@@ -463,6 +463,21 @@ public class ServicioStreaming implements ABM<AudioVisual> {
         System.out.println("Estado de " + elemento.getTitulo() + " modificado correctamente.");
     }
 
+    public void  modicarestadousuario(Usuarios usuario)
+    {
+        usuario.setEstado(!usuario.isEstado());
+        System.out.println("Se modifico el estado del usuario");
+        System.out.println("Estado de "+usuario.getNombre()+"es"+usuario.isEstado());
+        guardarenarchivo();
+    }
+
+
+
+
+
+
+
+
 
     public void mostrarpeliculaparausuario() {
         System.out.println("Peliculas: \n\n");
