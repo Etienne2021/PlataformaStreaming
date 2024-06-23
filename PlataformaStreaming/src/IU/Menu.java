@@ -1,5 +1,6 @@
 package IU;
 
+import Contenedoras.ContenedoraUsuario;
 import Contenedoras.ServicioStreaming;
 import Contenido.AudioVisual;
 import Contenido.Episodio;
@@ -18,7 +19,7 @@ public class Menu {
 
     Scanner scanner = new Scanner(System.in);
     ServicioStreaming servicioStreaming = new ServicioStreaming();
-    Administrador administrador = new Administrador("Admin", "12345678", true);
+    ContenedoraUsuario contenedoraUsuario = new ContenedoraUsuario();
 
 
     public void menuprincipal() {
@@ -60,6 +61,9 @@ public class Menu {
 
 
     public void menuAdmin(Administrador admin) throws InvalidRatingException {
+
+        contenedoraUsuario.leerenarchivoadmin();
+
         int opcion;
         boolean salir = false;
 
@@ -79,7 +83,8 @@ public class Menu {
             System.out.println("11. Mostrar Administradores");
             System.out.println("12.  Ser usuario");
             System.out.println("13. Modificar estado usuario");
-            System.out.println("13. Salir");
+            System.out.println("14. Modificar estado admin");
+            System.out.println("15. Salir");
 
             opcion = scanner.nextInt();
             scanner.nextLine();
@@ -87,51 +92,57 @@ public class Menu {
             switch (opcion) {
                 case 1:
                     servicioStreaming.mostrarpelicula();
-                    cargarPelicula();
+                    servicioStreaming.cargarPelicula();
                     break;
                 case 2:
                     servicioStreaming.mostrarseries();
-                    cargarserie();
+                    servicioStreaming.cargarserie();
                     break;
                 case 3:
                     servicioStreaming.mostrarpelicula();
                     servicioStreaming.mostrarseries();
-                    eliminar();
+                    servicioStreaming.eliminar();
                     break;
                 case 4:
                     servicioStreaming.mostrarpelicula();
                     servicioStreaming.mostrarseries();
-                    modificar();
+                    servicioStreaming.modificar();
                     break;
                 case 5:
-                    servicioStreaming.mostrarUsuarios();
-                    eliminarUsuario();
+                    contenedoraUsuario.mostrarUsuarios();
+                    contenedoraUsuario.eliminarUsuario();
                     break;
                 case 6:
                     servicioStreaming.mostrarpelicula();
                     servicioStreaming.mostrarseries();
                     break;
                 case 7:
-                    servicioStreaming.mostrarUsuarios();
+                    contenedoraUsuario.mostrarUsuarios();
                     break;
                 case 8:
-                    mostrarHistorialSiExiste();
+                    contenedoraUsuario.mostrarHistorialSiExiste();
                     break;
                 case 9:
-                    agregarNuevoAdministrador();
+                    contenedoraUsuario.agregarNuevoAdministrador();
                     break;
                 case 10:
-                    eliminarAdministrador();
+                    contenedoraUsuario.eliminarAdministrador();
                     break;
                 case 11:
-                    mostrarAdministradores();
+                    contenedoraUsuario.mostrarAdministradores();
                     break;
                 case 12:
                     gestionarPerfiles(admin);
+                    break;
                 case 13:
-                    servicioStreaming.mostrarUsuarios();
-                    modificarestadousuario();
+                    contenedoraUsuario.mostrarUsuarios();
+                    contenedoraUsuario.modificarestadousuario();
+                    break;
                 case 14:
+                    contenedoraUsuario.mostrarAdministradores();
+                    contenedoraUsuario.modificarestadoadmin();
+                    break;
+                case 15:
                     salir = true;
                     System.out.println("Sesión de administrador finalizada.");
                     break;
@@ -335,7 +346,11 @@ public class Menu {
     }
 
 
+
+
     public void registrarse() throws InvalidRatingException {
+
+        Scanner scanner=new Scanner(System.in);
 
 
         String nombre;
@@ -356,14 +371,14 @@ public class Menu {
 
 
             try {
-                servicioStreaming.validarcontraseña(contraseña, contraseñaConfirmar);
+                contenedoraUsuario.validarcontraseña(contraseña, contraseñaConfirmar);
             } catch (ContraseñaNoCoincidenException e) {
                 System.out.println("Error: " + e.getMessage());
                 continue; // Continuar al siguiente ciclo del bucle
             }
 
             try {
-                servicioStreaming.verificarsiexisteusuario(nombre);
+                contenedoraUsuario.verificarsiexisteusuario(nombre);
             } catch (UsuarioYaexisteException e) {
                 System.out.println("Error: " + e.getMessage());
                 continue; // Continuar al siguiente ciclo del bucle
@@ -384,12 +399,14 @@ public class Menu {
         Perfil perfil1 = new Perfil(nombrePerfil);
         usuario1.agregarPerfil(perfil1);
 
-        servicioStreaming.AgregarUsuario(usuario1);
+        contenedoraUsuario.agregar(usuario1);
 
         menuprincipal();
     }
 
     public void iniciarSesion() throws InvalidRatingException {
+
+        Scanner scanner=new Scanner(System.in);
 
         String nombre;
         int opcionperfil;
@@ -400,18 +417,18 @@ public class Menu {
             String contraseña = scanner.nextLine();
             try {
                 Usuarios usuarioactual = new Usuarios();
-                usuarioactual = servicioStreaming.verificarsiexiste(nombre, contraseña);
+                usuarioactual =contenedoraUsuario.verificarsiexiste(nombre, contraseña);
                 if (usuarioactual.isEstado()==false)
                 {
                     System.out.println("Su usuario se encuentra deshabilitado");
                     System.out.println("Estamos habilitando su usurio.....");
                     usuarioactual.setEstado(true);
-                    servicioStreaming.guardarenarchivo();
+                    contenedoraUsuario.guardarenarchivo();
                 }
                 ArrayList<Perfil> perfiles = usuarioactual.getPerfiles();
                 System.out.println("\nInicio de sesion exitoso");
                 if (!perfiles.isEmpty()) {
-                    servicioStreaming.mostrarperfiles(nombre);
+                    contenedoraUsuario.mostrarperfiles(nombre);
                 }
                 if (perfiles.isEmpty()) {
                     System.out.println("No hay perfiles cargador para este usuario.");
@@ -419,7 +436,7 @@ public class Menu {
                     nombre = scanner.nextLine();
                     Perfil perfilnuevo = new Perfil(nombre);
                     usuarioactual.agregarPerfil(perfilnuevo);
-                    servicioStreaming.guardarenarchivo();
+                    contenedoraUsuario.guardarenarchivo();
                 }
                 do {
                     System.out.println("1-seleccionar  perfil");
@@ -434,7 +451,7 @@ public class Menu {
                         do {
                             System.out.println("Ingrese el nombre del perfil al que quiere ingresar");
                             nombre = scanner.nextLine();
-                            existe = servicioStreaming.verificarexisteperfil(nombre, usuarioactual);
+                            existe = contenedoraUsuario.verificarexisteperfil(nombre, usuarioactual);
                             if (!existe) {
                                 System.out.println("Perfil ingresado no existe.\n");
                             }
@@ -445,7 +462,7 @@ public class Menu {
                         nombre = scanner.nextLine();
                         Perfil perfilnuevo = new Perfil(nombre);
                         usuarioactual.agregarPerfil(perfilnuevo);
-                        servicioStreaming.guardarenarchivo();
+                        contenedoraUsuario.guardarenarchivo();
                     } else if (opcionperfil == 3) {
                         if (perfiles.isEmpty()) {
                             System.out.println("No hay perfiles cargados para el usuario actual.");
@@ -454,11 +471,11 @@ public class Menu {
                         do {
                             System.out.println("Ingrese el nombre del perfil que quiere eliminar");
                             nombre = scanner.nextLine();
-                            existe = servicioStreaming.verificarexisteperfil(nombre, usuarioactual);
+                            existe =contenedoraUsuario.verificarexisteperfil(nombre, usuarioactual);
                             if (existe) {
                                 usuarioactual.eliminarPerfil(nombre);
                                 System.out.println("Perfil eliminado correctamente");
-                                servicioStreaming.guardarenarchivo();
+                                contenedoraUsuario.guardarenarchivo();
                                 if (perfiles.isEmpty()) {
                                     System.out.println("Ya no existen perfiles para este usuario \n");
                                     System.out.println("Para iniciar en este usuario debe crear un perfil nuevo. \n");
@@ -475,7 +492,7 @@ public class Menu {
                     }
                 } while (opcionperfil != 1);
 
-                servicioStreaming.agregarHistorialInicioSesion(nombre);
+                contenedoraUsuario.agregarHistorialInicioSesion(nombre);
                 menuUsuario(usuarioactual);
             } catch (UsuarioNoEncontradoException e) {
                 System.out.println("\nError al iniciar sesión: " + e.getMessage());
@@ -488,168 +505,12 @@ public class Menu {
 
     }
 
-
-    public void cerrarSesion() {
-
-        System.out.println("\nSesion cerrada");
-
-    }
-
-
-    public void mostrarHistorialSiExiste() {
-
-        boolean usuarioEncontrado;
-        do {
-            System.out.println("Ingrese el nombre del usuario:");
-            String nombre = scanner.nextLine();
-            usuarioEncontrado = servicioStreaming.verificarsiexisteusuarioparahistorial(nombre);
-            if (usuarioEncontrado) {
-                servicioStreaming.mostrarHistorialInicioSesion(nombre);
-            } else {
-                System.out.println("Usuario no encontrado. Por favor, intente de nuevo.");
-            }
-        } while (!usuarioEncontrado);
-    }
-
-    public void cargarPelicula() {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Ingrese los datos de la película:");
-        System.out.print("Título: ");
-        String titulo = scanner.nextLine();
-        System.out.print("Género: ");
-        String genero = scanner.nextLine();
-        System.out.print("Año de lanzamiento: ");
-        int año = scanner.nextInt();
-        System.out.print("Calificación: ");
-        int calificacion = scanner.nextInt();
-        System.out.print("Disponible (1-Sí / 0-No): ");
-        boolean disponible = scanner.nextInt() == 1;
-        System.out.print("Duración (en minutos): ");
-        int duracion = scanner.nextInt();
-
-        Pelicula nuevaPelicula = new Pelicula(titulo, genero, año, calificacion, disponible, duracion);
-        servicioStreaming.agregar(nuevaPelicula);
-
-        System.out.println("Película cargada exitosamente:");
-        System.out.println(nuevaPelicula);
-
-        scanner.nextLine(); // Limpiar el buffer del scanner
-    }
-
-    public void cargarserie() {
-
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Ingrese los datos de la serie:");
-        System.out.print("Título: ");
-        String titulo = scanner.nextLine();
-        System.out.print("Género: ");
-        String genero = scanner.nextLine();
-        System.out.print("Año de lanzamiento: ");
-        int año = scanner.nextInt();
-        System.out.print("Calificación: ");
-        int calificacion = scanner.nextInt();
-        System.out.print("Disponible (1-Sí / 0-No): ");
-        boolean disponible = scanner.nextInt() == 1;
-
-        Serie nuevaSerie = new Serie(titulo, genero, año, calificacion, disponible);
-
-        // Agregar episodios
-        boolean agregarEpisodios = true;
-        while (agregarEpisodios) {
-            scanner.nextLine(); // Limpiar el buffer del scanner
-            System.out.println("Ingrese los datos de un episodio:");
-            System.out.print("Nombre del episodio: ");
-            String nombreEpisodio = scanner.nextLine();
-            System.out.print("Número del episodio: ");
-            int numeroEpisodio = scanner.nextInt();
-            System.out.print("Duración del episodio (en minutos): ");
-            double duracionEpisodio = scanner.nextDouble();
-
-            Episodio episodio = new Episodio(nombreEpisodio, numeroEpisodio, duracionEpisodio);
-            nuevaSerie.agregarEpisodio(episodio);
-
-            System.out.print("¿Desea agregar otro episodio? (1-Sí / 0-No): ");
-            int opcion = scanner.nextInt();
-            if (opcion == 0) {
-                agregarEpisodios = false;
-            }
-        }
-
-        servicioStreaming.agregar(nuevaSerie);
-
-        System.out.println("Serie cargada exitosamente:");
-        System.out.println(nuevaSerie);
-
-        scanner.nextLine();
-    }
-
-    public void eliminar() {
-        System.out.println("Ingrese el titulo de la pelicula");
-        String titulo = scanner.nextLine();
-        AudioVisual elemento = servicioStreaming.buscarPorTitulo(titulo);
-        servicioStreaming.eliminar(elemento);
-        servicioStreaming.mostrarpelicula();
-
-    }
-
-    public void eliminarUsuario() {
-        boolean existe = true;
-        while (existe) {
-            System.out.println("Ingrese el nombre del usuario:");
-            String nombre = scanner.nextLine();
-            Usuarios usuarioBorrar = servicioStreaming.buscarUsuarioPorNombre(nombre);
-            if (usuarioBorrar == null) {
-                System.out.println("Usuario no encontrado. Intente nuevamente.");
-            } else {
-
-                servicioStreaming.eliminarUsuario(usuarioBorrar);
-                System.out.println("Usuario eliminado con éxito.");
-                existe = false; // Salir del ciclo
-            }
-        }
-    }
-
-
-
-
-
-    public void eliminarAdministrador() {
-        System.out.println("Ingrese el nombre del administrador a eliminar:");
-        String nombre = scanner.nextLine();
-        servicioStreaming.eliminarAdministrador(nombre);
-    }
-
-
-    public void modificar() {
-        System.out.println("Ingrese el titulo de la pelicula");
-        String titulo = scanner.nextLine();
-        AudioVisual elemento = servicioStreaming.buscarPorTitulo(titulo);
-        System.out.println(elemento);
-        servicioStreaming.modificarestado(elemento);
-        servicioStreaming.mostrarpelicula();
-    }
-  public void  modificarestadousuario()
-    {
-        System.out.println("Ingrese el nombre del usuario");
-        String nombre=scanner.nextLine();
-        Usuarios usuario=servicioStreaming.buscarUsuarioPorNombre(nombre);
-        if(usuario!=null)
-        {
-            servicioStreaming.modicarestadousuario(usuario);
-        }
-
-    }
-
-
-
     public void iniciarSesioncomoAdmin() {
-        servicioStreaming.leerenarchivoadmin(); // Cargar administradores desde el archivo
+        contenedoraUsuario.leerenarchivoadmin(); // Cargar administradores desde el archivo
         ArrayList<Perfil> perfilesadmin = new ArrayList<>();
         String nombre;
         boolean esadmin = false;
-        Administrador administrador = servicioStreaming.buscarAdministrador("Admin");// Buscar el administrador predeterminado
+        Administrador administrador = contenedoraUsuario.buscarAdministrador("Admin");// Buscar el administrador predeterminado
         perfilesadmin=administrador.getPerfiles();
 
 
@@ -669,7 +530,7 @@ public class Menu {
                     String nombreperfil = scanner.nextLine();
                     Perfil perfiladmin = new Perfil(nombreperfil);
                     administrador.agregarPerfil(perfiladmin);
-                    servicioStreaming.guardarenarchivoadmin();
+                    contenedoraUsuario.guardarenarchivoadmin();
                 }
                 // Mostrar perfiles del administrador
                 System.out.println("Perfiles del Administrador:");
@@ -693,34 +554,9 @@ public class Menu {
         }
     }
 
-
-    public void agregarNuevoAdministrador() {
-        System.out.println("Ingrese el nombre del nuevo administrador:");
-        String nombre = scanner.nextLine();
-        System.out.println("Ingrese la contraseña del nuevo administrador:");
-        String contraseña = scanner.nextLine();
-        // Puedes establecer el estado inicial como activo (true) o inactivo (false)
-        boolean estado = true;
-        Administrador nuevoAdmin = new Administrador(nombre, contraseña, estado);
-        servicioStreaming.agregarAdministrador(nuevoAdmin);
-        System.out.println("Ingrese el nombre del perfil para el administrador");
-        String nombrePerfil = scanner.nextLine();
-        Perfil perfil = new Perfil(nombrePerfil);
-        nuevoAdmin.agregarPerfil(perfil);
-        servicioStreaming.guardarenarchivoadmin();
-    }
-
-
-
-
-    public void mostrarAdministradores() {
-        servicioStreaming.mostrarAdministradores();
-    }
-
-
     public void gestionarPerfiles(Administrador usuarioactual) throws InvalidRatingException {
 
-        servicioStreaming.leerenarchivoadmin();
+        contenedoraUsuario.leerenarchivoadmin();
         ArrayList<Perfil> perfiles = usuarioactual.getPerfiles();
         int opcionperfil;
         do {
@@ -728,7 +564,7 @@ public class Menu {
             System.out.println("2-crear nuevo perfil");
             System.out.println("3-eliminar perfil");
 
-             opcionperfil = scanner.nextInt();
+            opcionperfil = scanner.nextInt();
             scanner.nextLine();
             boolean existe;
 
@@ -736,7 +572,7 @@ public class Menu {
                 do {
                     System.out.println("Ingrese el nombre del perfil al que quiere ingresar");
                     String nombre = scanner.nextLine();
-                    existe = servicioStreaming.verificarexisteperfil(nombre, usuarioactual);
+                    existe = contenedoraUsuario.verificarexisteperfil(nombre, usuarioactual);
                     if (!existe) {
                         System.out.println("Perfil ingresado no existe.\n");
                     }
@@ -748,7 +584,7 @@ public class Menu {
                 String nombre = scanner.nextLine();
                 Perfil perfilnuevo = new Perfil(nombre);
                 usuarioactual.agregarPerfil(perfilnuevo);
-                servicioStreaming.guardarenarchivoadmin();
+                contenedoraUsuario.guardarenarchivoadmin();
             } else if (opcionperfil == 3) {
                 if (perfiles.isEmpty()) {
                     System.out.println("No hay perfiles cargados para el usuario actual.debe crear uno nuevo");
@@ -757,11 +593,11 @@ public class Menu {
                 do {
                     System.out.println("Ingrese el nombre del perfil que quiere eliminar");
                     String nombre = scanner.nextLine();
-                    existe = servicioStreaming.verificarexisteperfil(nombre, usuarioactual);
+                    existe = contenedoraUsuario.verificarexisteperfil(nombre, usuarioactual);
                     if (existe) {
                         usuarioactual.eliminarPerfil(nombre);
                         System.out.println("Perfil eliminado correctamente");
-                        servicioStreaming.guardarenarchivoadmin();
+                        contenedoraUsuario.guardarenarchivoadmin();
                     } else {
                         System.out.println("El perfil no existe");
                     }
@@ -774,6 +610,7 @@ public class Menu {
         } while (opcionperfil != 1);
 
     }
+
 
 
 

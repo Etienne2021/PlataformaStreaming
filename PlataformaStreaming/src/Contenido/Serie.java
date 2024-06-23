@@ -33,10 +33,6 @@ public class Serie extends AudioVisual {
         episodios.add(episodio);
     }
 
-    public void eliminarEpidosio(Episodio episodio)
-    {
-        episodios.remove(episodio);
-    }
 
 
     @Override

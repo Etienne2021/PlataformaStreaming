@@ -23,13 +23,6 @@ public class Episodio {
 
 
 
-    public void calificar(int calificacion) throws InvalidRatingException {
-        if (calificacion < 1 || calificacion > 5) {
-            throw new InvalidRatingException("Calificación inválida. Debe ser entre 1 y 5.");
-        }
-        System.out.println("Has calificado el episodio " + titulo + " con " + calificacion + " estrellas.");
-    }
-
     public String getTitulo() {
         return titulo;
     }

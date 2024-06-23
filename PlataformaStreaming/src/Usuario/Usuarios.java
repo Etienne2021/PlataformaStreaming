@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Usuarios {
+public  class Usuarios {
 
     private  String Nombre;
 
@@ -90,16 +90,6 @@ public class Usuarios {
     public ArrayList<Perfil> getPerfiles() {
         return perfiles;
     }
-
-    public Perfil getPerfil(String nombre) {
-        for (Perfil perfil : perfiles) {
-            if (perfil.getNombre().equalsIgnoreCase(nombre)) {
-                return perfil;
-            }
-        }
-        return null; // O lanzar una excepción si prefieres manejar perfiles no encontrados de otra manera
-    }
-
 
     public void setPerfiles(ArrayList<Perfil> perfiles) {
         this.perfiles = perfiles;
